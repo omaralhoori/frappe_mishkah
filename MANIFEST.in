@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include mishkah *.css
+recursive-include mishkah *.csv
+recursive-include mishkah *.html
+recursive-include mishkah *.ico
+recursive-include mishkah *.js
+recursive-include mishkah *.json
+recursive-include mishkah *.md
+recursive-include mishkah *.png
+recursive-include mishkah *.py
+recursive-include mishkah *.svg
+recursive-include mishkah *.txt
+recursive-exclude mishkah *.pyc
