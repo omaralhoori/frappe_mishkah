@@ -1,0 +1,91 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-12-10 04:36:15.006123",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "joining_settings_section",
+  "default_joining_program",
+  "default_joining_level",
+  "section_break_zg6c",
+  "current_educational_term"
+ ],
+ "fields": [
+  {
+   "fieldname": "joining_settings_section",
+   "fieldtype": "Section Break",
+   "label": "Joining Settings"
+  },
+  {
+   "fieldname": "default_joining_program",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Default Joining Program",
+   "options": "Mishkah Program",
+   "reqd": 1
+  },
+  {
+   "fieldname": "default_joining_level",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Default Joining Level",
+   "options": "Mishkah Program Level",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_zg6c",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "current_educational_term",
+   "fieldtype": "Link",
+   "label": "Current Educational Term",
+   "options": "Mishkah Educational Term",
+   "reqd": 1
+  }
+ ],
+ "hide_toolbar": 1,
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2023-12-10 05:35:03.889703",
+ "modified_by": "Administrator",
+ "module": "Mishkah",
+ "name": "Mishkah Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "read": 1,
+   "role": "Mishkah Data Entry Specialist"
+  },
+  {
+   "read": 1,
+   "role": "Mishkah Data Manager",
+   "write": 1
+  },
+  {
+   "read": 1,
+   "role": "Mishkah Instructor"
+  },
+  {
+   "read": 1,
+   "role": "Mishkah Joining Request Approver"
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

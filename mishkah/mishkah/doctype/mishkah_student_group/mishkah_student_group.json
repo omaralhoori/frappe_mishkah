@@ -1,0 +1,160 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "STG-.YY.-.####",
+ "creation": "2023-12-10 03:38:55.666355",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "student_group_name",
+  "group_type",
+  "column_break_bk5l",
+  "program",
+  "level",
+  "section_break_q0wc",
+  "students",
+  "groups",
+  "instructors"
+ ],
+ "fields": [
+  {
+   "fieldname": "student_group_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Student Group Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_bk5l",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "program",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Program",
+   "options": "Mishkah Program",
+   "reqd": 1
+  },
+  {
+   "fieldname": "level",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Level",
+   "mandatory_depends_on": "eval:doc.group_type == 'Student Subgroup' || doc.group_type =='Student Main Group' || doc.group_type=='Level Group'",
+   "options": "Mishkah Program Level"
+  },
+  {
+   "fieldname": "section_break_q0wc",
+   "fieldtype": "Section Break"
+  },
+  {
+   "depends_on": "eval:doc.group_type=='Student Subgroup'",
+   "fieldname": "students",
+   "fieldtype": "Table",
+   "label": "Students",
+   "options": "Mishkah Student Group Student"
+  },
+  {
+   "fieldname": "instructors",
+   "fieldtype": "Table",
+   "label": "Instructors",
+   "options": "Mishkah Student Group Instructor"
+  },
+  {
+   "fieldname": "group_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Group Type",
+   "options": "Student Subgroup\nStudent Main Group\nLevel Group\nProgram Group",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.group_type!='Student Subgroup'",
+   "fieldname": "groups",
+   "fieldtype": "Table",
+   "label": "Groups",
+   "options": "Mishkah Student Group Group",
+   "permlevel": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-12-10 14:50:08.159222",
+ "modified_by": "Administrator",
+ "module": "Mishkah",
+ "name": "Mishkah Student Group",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "read": 1,
+   "role": "Mishkah Data Entry Specialist",
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "permlevel": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Mishkah Data Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "permlevel": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Mishkah Data Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "read": 1,
+   "role": "Mishkah Instructor"
+  }
+ ],
+ "search_fields": "student_group_name",
+ "show_title_field_in_link": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "student_group_name"
+}

@@ -1,0 +1,72 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:level",
+ "creation": "2023-12-10 02:47:32.138271",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "level_order",
+  "level",
+  "stages"
+ ],
+ "fields": [
+  {
+   "fieldname": "level_order",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Level Order",
+   "reqd": 1
+  },
+  {
+   "fieldname": "level",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Level",
+   "options": "Mishkah Program Level",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "stages",
+   "fieldtype": "Table",
+   "label": "Stages",
+   "options": "Mishkah Learning Path Stage",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-12-10 05:14:48.992588",
+ "modified_by": "Administrator",
+ "module": "Mishkah",
+ "name": "Mishkah Learning Path",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "read": 1,
+   "role": "Mishkah Data Manager",
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

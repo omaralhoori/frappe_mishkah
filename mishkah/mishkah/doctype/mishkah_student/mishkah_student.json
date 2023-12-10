@@ -1,0 +1,144 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "MSTD-.YY.-.#####",
+ "creation": "2023-12-09 18:41:01.472922",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "first_name",
+  "column_break_yqja",
+  "middle_name",
+  "column_break_3ti7",
+  "last_name",
+  "section_break_jem7",
+  "student_email",
+  "column_break_kmlp",
+  "student_mobile",
+  "section_break_imvp",
+  "nationality",
+  "section_break_4pjq",
+  "user",
+  "student_name"
+ ],
+ "fields": [
+  {
+   "fieldname": "first_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "First Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_yqja",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "middle_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Middle Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_3ti7",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "last_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Last Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_jem7",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "student_email",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Student Email"
+  },
+  {
+   "fieldname": "column_break_kmlp",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "student_mobile",
+   "fieldtype": "Data",
+   "label": "Student Mobile",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "section_break_imvp",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "nationality",
+   "fieldtype": "Link",
+   "label": "Nationality",
+   "options": "Nationality",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_4pjq",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "user",
+   "fieldtype": "Link",
+   "label": "User",
+   "options": "User"
+  },
+  {
+   "fieldname": "student_name",
+   "fieldtype": "Data",
+   "label": "Student Name"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-12-10 05:33:48.546190",
+ "modified_by": "Administrator",
+ "module": "Mishkah",
+ "name": "Mishkah Student",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "read": 1,
+   "role": "Mishkah Data Manager",
+   "write": 1
+  },
+  {
+   "create": 1,
+   "read": 1,
+   "role": "Mishkah Data Entry Specialist",
+   "write": 1
+  }
+ ],
+ "show_title_field_in_link": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "student_name"
+}

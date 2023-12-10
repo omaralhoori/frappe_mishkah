@@ -1,0 +1,116 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "LENRL-.YY.-.#####",
+ "creation": "2023-12-10 03:13:41.541016",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "program_enrollment",
+  "level",
+  "column_break_wwnb",
+  "enrollment_date",
+  "educational_term",
+  "section_break_2pvd",
+  "total_level_points",
+  "column_break_pysw",
+  "enrollment_status"
+ ],
+ "fields": [
+  {
+   "fieldname": "program_enrollment",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Program Enrollment",
+   "options": "Mishkah Program Enrollment",
+   "reqd": 1
+  },
+  {
+   "fieldname": "level",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Level",
+   "options": "Mishkah Program Level",
+   "reqd": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "total_level_points",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Total Level Points"
+  },
+  {
+   "fieldname": "enrollment_date",
+   "fieldtype": "Date",
+   "label": "Enrollment Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_wwnb",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "educational_term",
+   "fieldtype": "Link",
+   "label": "Educational Term",
+   "options": "Mishkah Educational Term",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_2pvd",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_pysw",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "enrollment_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Enrollment Status",
+   "options": "Ongoing\nCompleted\nFailed",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-12-10 14:57:42.800084",
+ "modified_by": "Administrator",
+ "module": "Mishkah",
+ "name": "Mishkah Level Enrollment",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Mishkah Joining Request Approver",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

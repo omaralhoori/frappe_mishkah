@@ -1,0 +1,109 @@
+{
+ "actions": [],
+ "allow_copy": 1,
+ "allow_rename": 1,
+ "creation": "2023-12-10 06:29:01.526614",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "student_group",
+  "column_break_cxeu",
+  "level_stage",
+  "column_break_pnv0",
+  "get_students",
+  "section_break_fdlg",
+  "students"
+ ],
+ "fields": [
+  {
+   "fieldname": "student_group",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Student Group",
+   "options": "Mishkah Student Group",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_cxeu",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "level_stage",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Level Stage",
+   "options": "Mishkah Level Stage",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_fdlg",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "students",
+   "fieldtype": "HTML",
+   "label": "students"
+  },
+  {
+   "fieldname": "column_break_pnv0",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "get_students",
+   "fieldtype": "Button",
+   "label": "Get Students"
+  }
+ ],
+ "hide_toolbar": 1,
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2023-12-10 06:35:08.849432",
+ "modified_by": "Administrator",
+ "module": "Mishkah",
+ "name": "Mishkah Progress Editing Tool",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "Mishkah Data Entry Specialist",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "Mishkah Data Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "read": 1,
+   "role": "Mishkah Instructor",
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

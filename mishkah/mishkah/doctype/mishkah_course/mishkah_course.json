@@ -1,0 +1,95 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:course_code",
+ "creation": "2023-12-10 02:32:42.329202",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "course_code",
+  "course_name",
+  "material_type",
+  "material_resource",
+  "course_points"
+ ],
+ "fields": [
+  {
+   "fieldname": "course_code",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Course Code",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "course_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Course Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "material_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Material Type",
+   "options": "\nEssential Book\nAdditional Book\nRecord\nArticle\nDiscernment Talk\nMagazine\nDiscussion Participation",
+   "reqd": 1
+  },
+  {
+   "fieldname": "material_resource",
+   "fieldtype": "Attach",
+   "label": "Material Resource"
+  },
+  {
+   "fieldname": "course_points",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Course Points",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-12-10 05:15:16.111066",
+ "modified_by": "Administrator",
+ "module": "Mishkah",
+ "name": "Mishkah Course",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Mishkah Data Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "quick_entry": 1,
+ "search_fields": "course_name",
+ "show_title_field_in_link": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "course_name"
+}

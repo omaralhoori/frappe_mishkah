@@ -1,0 +1,217 @@
+{
+ "charts": [],
+ "content": "[{\"id\":\"yRa-YNH5Fu\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Mishkah</span>\",\"col\":12}},{\"id\":\"FPccIUdB9I\",\"type\":\"card\",\"data\":{\"card_name\":\"Student and Instructor\",\"col\":4}},{\"id\":\"jYjh0bMERw\",\"type\":\"card\",\"data\":{\"card_name\":\"Content\",\"col\":4}},{\"id\":\"fh_0c0Z8vA\",\"type\":\"card\",\"data\":{\"card_name\":\"Educational Roadmap\",\"col\":4}},{\"id\":\"JtcaqiCCJb\",\"type\":\"card\",\"data\":{\"card_name\":\"Progression\",\"col\":4}},{\"id\":\"SkxruE2Qnl\",\"type\":\"card\",\"data\":{\"card_name\":\"Web Requests\",\"col\":4}},{\"id\":\"Ko_OxpLjCY\",\"type\":\"card\",\"data\":{\"card_name\":\"Settings\",\"col\":4}}]",
+ "creation": "2023-12-10 02:56:10.133133",
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "/assets/frappe/icons/icons/119.png",
+ "icon_image": "/assets/frappe/icons/icons/169.png",
+ "icon_type": "Image",
+ "idx": 0,
+ "is_hidden": 0,
+ "label": "Mishkah",
+ "links": [
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Content",
+   "link_count": 2,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Programs",
+   "link_count": 0,
+   "link_to": "Mishkah Program",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Courses",
+   "link_count": 0,
+   "link_to": "Mishkah Course",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Educational Roadmap",
+   "link_count": 3,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Learning Path",
+   "link_count": 0,
+   "link_to": "Mishkah Learning Path",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Levels",
+   "link_count": 0,
+   "link_to": "Mishkah Program Level",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Stages",
+   "link_count": 0,
+   "link_to": "Mishkah Level Stage",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Student and Instructor",
+   "link_count": 3,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Students",
+   "link_count": 0,
+   "link_to": "Mishkah Student",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Instructors",
+   "link_count": 0,
+   "link_to": "Mishkah Instructor",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Student Groups",
+   "link_count": 0,
+   "link_to": "Mishkah Student Group",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Web Requests",
+   "link_count": 1,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Student Joining Requests",
+   "link_count": 0,
+   "link_to": "Mishkah Student Joining Request",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Settings",
+   "link_count": 1,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Settings",
+   "link_count": 0,
+   "link_to": "Mishkah Settings",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Progression",
+   "link_count": 4,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Progress Editing Tool",
+   "link_count": 0,
+   "link_to": "Mishkah Progress Editing Tool",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Program Enrollments",
+   "link_count": 0,
+   "link_to": "Mishkah Program Enrollment",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Level Enrollments",
+   "link_count": 0,
+   "link_to": "Mishkah Level Enrollment",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Course Progress",
+   "link_count": 0,
+   "link_to": "Mishkah Course Progress",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  }
+ ],
+ "modified": "2023-12-10 06:31:22.997461",
+ "modified_by": "Administrator",
+ "module": "Mishkah",
+ "name": "Mishkah",
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "roles": [],
+ "sequence_id": 1.0,
+ "shortcuts": [],
+ "title": "Mishkah"
+}
