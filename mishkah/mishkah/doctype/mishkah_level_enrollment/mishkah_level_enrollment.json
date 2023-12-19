@@ -17,7 +17,8 @@
   "total_level_points",
   "column_break_pysw",
   "enrollment_status",
-  "certificate_name"
+  "certificate_name",
+  "certificate"
  ],
  "fields": [
   {
@@ -82,11 +83,16 @@
    "fieldtype": "Data",
    "label": "Certificate Name",
    "read_only": 1
+  },
+  {
+   "fieldname": "certificate",
+   "fieldtype": "Attach",
+   "label": "Certificate"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-12-17 17:12:57.335520",
+ "modified": "2023-12-19 17:26:01.948133",
  "modified_by": "Administrator",
  "module": "Mishkah",
  "name": "Mishkah Level Enrollment",

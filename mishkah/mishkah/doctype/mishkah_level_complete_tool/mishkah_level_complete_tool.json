@@ -1,0 +1,75 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-12-19 17:35:04.156034",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "level",
+  "column_break_ruxd",
+  "get_students",
+  "create_level_progress",
+  "section_break_q7nl",
+  "level_students"
+ ],
+ "fields": [
+  {
+   "fieldname": "level",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Level",
+   "options": "Mishkah Program Level",
+   "reqd": 1
+  },
+  {
+   "fieldname": "get_students",
+   "fieldtype": "Button",
+   "label": "Get Students"
+  },
+  {
+   "fieldname": "create_level_progress",
+   "fieldtype": "Button",
+   "label": "Create Level Progress"
+  },
+  {
+   "fieldname": "section_break_q7nl",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "level_students",
+   "fieldtype": "Table",
+   "label": "Level Students",
+   "options": "Mishkah Level Complete Tool Student"
+  },
+  {
+   "fieldname": "column_break_ruxd",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "hide_toolbar": 1,
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2023-12-19 19:18:45.939297",
+ "modified_by": "Administrator",
+ "module": "Mishkah",
+ "name": "Mishkah Level Complete Tool",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
