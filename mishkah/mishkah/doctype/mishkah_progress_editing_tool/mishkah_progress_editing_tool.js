@@ -43,7 +43,6 @@ frappe.ui.form.on("Mishkah Progress Editing Tool", {
 	},
     render_excel_table_header(frm, courses){
         var columns= '';
-		console.log(courses)
         for (var course of courses){
             columns += `<th course-id="${course.course}" course-points="${course.course_points}" >${course.course_name} <small>(${course.course_points})</small></th>`
         }
@@ -71,9 +70,11 @@ frappe.ui.form.on("Mishkah Progress Editing Tool", {
             var columns = ''
 			var student_courses = [];
 			var student_points = [];
+			var student_progresses = [];
 			if (row['courses']){
 				student_courses = row['courses'].split(',')
 				student_points = row['points'].split(',')
+				student_progresses = row['progresses'].split(',')
 			}
 			var studentName = row['student_name']
 			var studentId = row['student']
@@ -84,7 +85,10 @@ frappe.ui.form.on("Mishkah Progress Editing Tool", {
 				var courseIndex = student_courses.indexOf(course['course'])
 				if (courseIndex >= 0){
 					var studentPoints = parseFloat(student_points[courseIndex]).toFixed(1)
-					columns += `<td style="min-width:150px;"><input type="number" step=".01" class="form-control"  value="${studentPoints}" course="${course['course']}" min="0"  max="${course['course_points']}" max-points=${course['course_points']} onchange="coursePointChanged(this)" /></td>`
+					var progressName = student_progresses[courseIndex]
+					columns += `<td style="min-width:150px;" enrollment-id="${levelEnrollment}" course="${course['course']}" max-points=${course['course_points']}>
+					${frappe.render_mark_input(studentPoints, course['course'], course['course_points'], progressName)}
+					</td>`
 				}else{
 					columns += `<td style="min-width:200px;" enrollment-id="${levelEnrollment}" course="${course['course']}" max-points=${course['course_points']}>
 					<button class="btn btn-sm" onclick="frappe.setCourseMark(this, 100)" >Full</button>
@@ -103,10 +107,48 @@ frappe.ui.form.on("Mishkah Progress Editing Tool", {
         }
 
         return `<tbody>${html}</tbody>`
-    }
+    },
 });
 
-
+frappe.render_mark_input = (studentPoints, courseId, coursPoints, progressName) => {
+	return `<input type="number" 
+	step=".01" class="form-control" 
+	 value="${studentPoints}" 
+	 course="${courseId}"
+	  min="0"  max="${coursPoints}" 
+	  progress-name="${progressName}"
+	  max-points=${coursPoints} 
+	  onchange="frappe.coursePointChanged(this)" />`;
+}
+frappe.coursePointChanged = (e) => {
+	var parentNode = e.parentNode
+	var enrollment = parentNode.getAttribute('enrollment-id')
+	var maxPoints = parentNode.getAttribute('max-points')
+	var courseId = parentNode.getAttribute('course')
+	var progressName = e.getAttribute('progress-name')
+	var points = e.value
+	if (Number(maxPoints) >= Number(points) && Number(points) >= 0){
+		if (progressName){
+			frappe.call({
+				"method": "mishkah.mishkah.doctype.mishkah_progress_editing_tool.mishkah_progress_editing_tool.set_student_mark",
+				args: {
+					"enrollment": enrollment,
+					"points": points,
+					"course": courseId,
+					"progress_name": progressName,
+				},
+				callback: res => {
+					if (! res.message.is_success){
+						parentNode.innerHTML = res.message.message
+					}else{
+						parentNode.innerHTML = frappe.render_mark_input(res.message.points, courseId, maxPoints, res.message.progress_name)
+					}
+				}
+			})
+		}
+	}
+	
+}
 frappe.setCourseMark = (e, markPercentage) => {
 	var parentNode = e.parentNode
 	var enrollment = parentNode.getAttribute('enrollment-id')
@@ -123,7 +165,12 @@ frappe.setCourseMark = (e, markPercentage) => {
 				"course": courseId
 			},
 			callback: res => {
-				parentNode.innerHTML = res.message
+				if (! res.message.is_success){
+					parentNode.innerHTML = res.message.message
+				}else{
+					parentNode.innerHTML = frappe.render_mark_input(res.message.points, courseId, maxPoints, res.message.progress_name)
+				}
+				
 			}
 		})
 	}

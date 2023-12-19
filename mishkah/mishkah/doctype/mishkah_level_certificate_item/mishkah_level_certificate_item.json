@@ -1,0 +1,41 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-12-17 17:11:14.655839",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "certificate",
+  "min_points"
+ ],
+ "fields": [
+  {
+   "fieldname": "certificate",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Certificate",
+   "options": "Mishkah Certificate",
+   "reqd": 1
+  },
+  {
+   "fieldname": "min_points",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Min Points",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-12-17 17:11:14.655839",
+ "modified_by": "Administrator",
+ "module": "Mishkah",
+ "name": "Mishkah Level Certificate Item",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

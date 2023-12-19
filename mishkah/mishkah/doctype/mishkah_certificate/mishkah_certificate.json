@@ -1,0 +1,95 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:certificate_name",
+ "creation": "2023-12-17 15:17:13.132165",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "certificate_name",
+  "test_certificate",
+  "certificate_image",
+  "certificate_configuration",
+  "name_font",
+  "reason_font",
+  "date_font"
+ ],
+ "fields": [
+  {
+   "fieldname": "certificate_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Certificate Name",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "certificate_image",
+   "fieldtype": "Attach Image",
+   "label": "Certificate Image",
+   "reqd": 1
+  },
+  {
+   "fieldname": "certificate_configuration",
+   "fieldtype": "JSON",
+   "in_list_view": 1,
+   "label": "Certificate Configuration",
+   "reqd": 1
+  },
+  {
+   "fieldname": "test_certificate",
+   "fieldtype": "Data",
+   "label": "Test Certificate",
+   "read_only": 1
+  },
+  {
+   "fieldname": "name_font",
+   "fieldtype": "Link",
+   "label": "Name Font",
+   "options": "Mishkah Font",
+   "reqd": 1
+  },
+  {
+   "fieldname": "reason_font",
+   "fieldtype": "Link",
+   "label": "Reason Font",
+   "options": "Mishkah Font",
+   "reqd": 1
+  },
+  {
+   "fieldname": "date_font",
+   "fieldtype": "Link",
+   "label": "Date Font",
+   "options": "Mishkah Font",
+   "reqd": 1
+  }
+ ],
+ "image_field": "certificate_image",
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-12-17 16:39:57.955370",
+ "modified_by": "Administrator",
+ "module": "Mishkah",
+ "name": "Mishkah Certificate",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

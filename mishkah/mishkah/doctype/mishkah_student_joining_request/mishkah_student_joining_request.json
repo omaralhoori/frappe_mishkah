@@ -13,11 +13,24 @@
   "column_break_blql",
   "last_name",
   "section_break_smba",
+  "country_code",
   "mobile_phone",
   "column_break_uuzu",
   "nationality",
+  "country_of_residence",
   "section_break_emyr",
-  "status"
+  "status",
+  "gender",
+  "age_category",
+  "educational_level",
+  "section_break_fnta",
+  "reader_before_mishkah",
+  "hear_about",
+  "other",
+  "have_information_about_mishkah",
+  "give_reading_time",
+  "cooperation_and_commitment",
+  "reason_for_joining"
  ],
  "fields": [
   {
@@ -57,7 +70,7 @@
    "fieldname": "mobile_phone",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "Mobile Phone",
+   "label": "Mobile No",
    "reqd": 1,
    "unique": 1
   },
@@ -84,11 +97,97 @@
    "label": "Status",
    "options": "Applied\nApproved\nRejected",
    "read_only": 1
+  },
+  {
+   "fieldname": "gender",
+   "fieldtype": "Select",
+   "label": "Gender",
+   "options": "\nFemale\nMale",
+   "reqd": 1
+  },
+  {
+   "fieldname": "age_category",
+   "fieldtype": "Select",
+   "label": "Age Category",
+   "options": "\nUnder 18\n18-30\n31-40\n41-50\n51-60\nAbove 60",
+   "reqd": 1
+  },
+  {
+   "fieldname": "country_of_residence",
+   "fieldtype": "Link",
+   "label": "Country of Residence",
+   "options": "Country",
+   "reqd": 1
+  },
+  {
+   "fieldname": "educational_level",
+   "fieldtype": "Link",
+   "label": "Educational Level",
+   "options": "Mishkah Educational Level",
+   "reqd": 1
+  },
+  {
+   "fieldname": "country_code",
+   "fieldtype": "Link",
+   "label": "Country Code",
+   "options": "Mishkah Mobile Code",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_fnta",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "reader_before_mishkah",
+   "fieldtype": "Select",
+   "label": "Are You Reader Before Mishkah?",
+   "options": "\nYes\nKind of\nNo",
+   "reqd": 1
+  },
+  {
+   "fieldname": "hear_about",
+   "fieldtype": "Select",
+   "label": "How Did You Hear About Mishkah?",
+   "options": "From Friend\nFrom Social Media\nOther",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.hear_about=='Other'",
+   "fieldname": "other",
+   "fieldtype": "Data",
+   "label": "Other"
+  },
+  {
+   "fieldname": "have_information_about_mishkah",
+   "fieldtype": "Select",
+   "label": "Do you have information about Mishkat, and what responsibilities you will have if you join the project?",
+   "options": "\nYes\nKind of\nNo",
+   "reqd": 1
+  },
+  {
+   "fieldname": "give_reading_time",
+   "fieldtype": "Select",
+   "label": "Are you ready to give reading specific time and make it a priority in your day?",
+   "options": "\nYes\nKind of\nNo",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cooperation_and_commitment",
+   "fieldtype": "Select",
+   "label": "Do you pledge cooperation, commitment, and good manners?",
+   "options": "\nYes\nKind of\nNo",
+   "reqd": 1
+  },
+  {
+   "fieldname": "reason_for_joining",
+   "fieldtype": "Data",
+   "label": "Why do you want to join Mishkat?",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-12-10 05:45:01.341516",
+ "modified": "2023-12-19 06:12:38.860909",
  "modified_by": "Administrator",
  "module": "Mishkah",
  "name": "Mishkah Student Joining Request",
