@@ -5,6 +5,8 @@ import frappe
 from frappe.model.document import Document
 from PIL import Image, ImageDraw, ImageFont
 import json
+from io import BytesIO
+import base64
 class MishkahCertificate(Document):
 	pass
 
@@ -54,10 +56,20 @@ def generate_certificate(certificate,student_name, reason_for_certificate,certif
 		date_format = certificate_configurations.get("date-format")
 	else:
 		date_format = "%d %B %Y"
+	_, _, text_width, text_height = draw.textbbox((0, 0), student_name, font=name_font)
+	#text_width, text_height = draw.textsize(student_name, name_font)
+	margin = text_width//4
+	# name_position = (name_position[0] - margin, name_position[1])
+	name_position = (name_position[0] - margin, name_position[1])
+	text_width, text_height = draw.textsize(reason_for_certificate, reason_font)
+	margin = text_width//4
+	reason_position = (reason_position[0] - margin, reason_position[1])
+
 	draw.text(name_position, student_name, font_color, font=name_font)
 	draw.text(reason_position, reason_for_certificate, font_color, font=reason_font)
 	draw.text(date_position, certificate_date, font_color, font=date_font)
 	test_file_path = frappe.get_site_path("public", "files", certificate_doc.name + "-test.png")
+	return pil_image_to_base64(template)
 	template.save(test_file_path)
 	certificate_doc.test_certificate = f"/files/{certificate_doc.name}-test.png"
 	certificate_doc.save()
@@ -69,3 +81,16 @@ def get_file_path(file_name):
 		return frappe.get_site_path("public", "files", file_name.split("/")[-1])
 	else:
 		return frappe.get_site_path("private", "files", file_name.split("/")[-1])
+	
+
+# Convert the PIL.Image to a base64 string
+def pil_image_to_base64(image):
+    buffered = BytesIO()
+    image.save(buffered, format="JPEG")  # You can specify the desired image format (JPEG, PNG, etc.)
+    return base64.b64encode(buffered.getvalue()).decode("utf-8")
+
+def get_x_position(x_position, text, font_size, image_width):
+	text_count = len(text)
+	text_width = text_count * font_size
+	margin = text_width//8
+	return x_position - margin

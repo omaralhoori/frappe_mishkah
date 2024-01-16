@@ -62,4 +62,28 @@ def handle_level_completion(enrollment, level,program_enrollment, next_level=Non
 
 
 def handle_failed_students(enrollment, level):
-	frappe.db.set_value("Mishkah Level Enrollment", enrollment, "enrollment_status", "Failed")
+	enrollment_doc = frappe.get_doc("Mishkah Level Enrollment", enrollment)
+	enrollment_doc.enrollment_status =  "Failed"
+	enrollment_doc.save(ignore_permissions=True)
+	new_level_doc = frappe.get_doc({
+			"doctype": "Mishkah Level Enrollment",
+			"program_enrollment": enrollment_doc.program_enrollment,
+			"enrollment_date": frappe.utils.nowdate(),
+			"level": enrollment_doc.level,
+			"educational_term": frappe.db.get_single_value("Mishkah Settings", "current_educational_term"),
+			"enrollment_status": "Ongoing"
+		})
+	new_level_doc.insert(ignore_permissions=True)
+	drop_student_from_groups(enrollment_doc.program_enrollment, level)
+
+def drop_student_from_groups(program_enrollment, level):
+	groups = frappe.db.sql("""
+			SELECT tbl1.name as group_name
+			FROM `tabMishkah Student Group` tbl1
+			WHERE tbl1.level = %(level)s
+			""", {"level": level}, as_dict=True)
+	program_enrollment_doc = frappe.get_doc("Mishkah Program Enrollment", program_enrollment)
+	for group in groups:
+		group_doc = frappe.get_doc("Mishkah Student Group", group.group_name)
+		group_doc.remove_student(program_enrollment_doc.student)
+		group_doc.save(ignore_permissions=True)

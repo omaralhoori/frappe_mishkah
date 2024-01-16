@@ -11,18 +11,21 @@ frappe.ui.form.on("Mishkah Certificate", {
                         label: 'Student Name',
                         fieldname: 'student_name',
                         fieldtype: 'Data',
+                        "default": "Omar Alhori",
                         reqd: 1
                     },
                     {
                         label: 'Reason for Certificate',
                         fieldname: 'reason_for_certificate',
                         fieldtype: 'Data',
+                        "default": "Test Certificate",
                         reqd: 1
                     },
                     {
                         label: 'Certificate Date',
                         fieldname: 'certificate_date',
                         fieldtype: 'Date',
+                        "default": frappe.datetime.get_today(),
                         reqd: 1
                     }
                 ],
@@ -39,6 +42,7 @@ frappe.ui.form.on("Mishkah Certificate", {
                         },
                         callback: (res) => {
                             if (res.message){
+                                frm.events.render_certificate(frm, res.message)
                                 frappe.msgprint({
                                     title: __('Success'),
                                     indicator: 'green',
@@ -66,4 +70,16 @@ frappe.ui.form.on("Mishkah Certificate", {
             })
           }
 	},
+    render_certificate(frm, image){
+        var d = new frappe.ui.Dialog({
+            'fields': [
+                {'fieldname': 'ht', 'fieldtype': 'HTML'},
+            ],
+           
+        });
+
+        d.fields_dict.ht.$wrapper.html(`<img src="data:image/png;base64,${image}" style="width: 100%; height: 100%;"/>`);
+            d.show();
+
+    }
 });
