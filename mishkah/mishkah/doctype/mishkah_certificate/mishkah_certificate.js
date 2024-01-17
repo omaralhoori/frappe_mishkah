@@ -11,14 +11,14 @@ frappe.ui.form.on("Mishkah Certificate", {
                         label: 'Student Name',
                         fieldname: 'student_name',
                         fieldtype: 'Data',
-                        "default": "Omar Alhori",
+                        "default": "اسم تجريبي",
                         reqd: 1
                     },
                     {
                         label: 'Reason for Certificate',
                         fieldname: 'reason_for_certificate',
                         fieldtype: 'Data',
-                        "default": "Test Certificate",
+                        "default": "اسم تجريبي",
                         reqd: 1
                     },
                     {

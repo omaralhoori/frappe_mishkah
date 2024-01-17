@@ -1,6 +1,7 @@
 # Copyright (c) 2023, Omar Alhori and contributors
 # For license information, please see license.txt
 
+from mishkah.mishkah.doctype.mishkah_certificate.mishkah_certificate import generate_certificate
 import frappe
 from frappe.model.document import Document
 import json
@@ -49,6 +50,7 @@ def create_level_progress(level, enrollments):
 
 def handle_level_completion(enrollment, level,program_enrollment, next_level=None):
 	frappe.db.set_value("Mishkah Level Enrollment", enrollment, "enrollment_status", "Completed")
+	handle_level_completion_certificate(enrollment)
 	if next_level:
 		new_level_doc = frappe.get_doc({
 			"doctype": "Mishkah Level Enrollment",
@@ -61,6 +63,25 @@ def handle_level_completion(enrollment, level,program_enrollment, next_level=Non
 		new_level_doc.insert(ignore_permissions=True)
 
 
+def handle_level_completion_certificate(enrollment):
+	level_enrollment = frappe.db.get_value("Mishkah Level Enrollment", enrollment, ["total_level_points", "level", "program_enrollment"], as_dict=True)
+	if not level_enrollment:
+		frappe.throw("Level Enrollment not found")
+	level_certificate = frappe.db.get_value("Mishkah Level Certificate", {"level": level_enrollment['level']},'name', cache=True) 
+	if not level_certificate:
+		frappe.throw("Level Certificate not found")
+	certificate_doc = frappe.get_doc("Mishkah Level Certificate", level_certificate)
+	graduation_certificate = None
+	for certificate in certificate_doc.certificates:
+		if level_enrollment['total_level_points'] >= certificate.min_points:
+			graduation_certificate = certificate
+			break
+	if not graduation_certificate:
+		return
+	student = frappe.db.get_value("Mishkah Program Enrollment", level_enrollment['program_enrollment'], "student_name")
+	certificate_path = generate_certificate(graduation_certificate.certificate, student, "", frappe.utils.nowdate(), save_as_file=True)
+	frappe.db.set_value("Mishkah Level Enrollment", enrollment, "certificate", certificate_path)
+	frappe.db.set_value("Mishkah Level Enrollment", enrollment, "certificate_name", graduation_certificate.certificate)
 def handle_failed_students(enrollment, level):
 	enrollment_doc = frappe.get_doc("Mishkah Level Enrollment", enrollment)
 	enrollment_doc.enrollment_status =  "Failed"

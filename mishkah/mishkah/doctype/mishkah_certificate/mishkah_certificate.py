@@ -12,7 +12,7 @@ class MishkahCertificate(Document):
 
 
 @frappe.whitelist()
-def generate_certificate(certificate,student_name, reason_for_certificate,certificate_date):
+def generate_certificate(certificate,student_name, reason_for_certificate,certificate_date, save_as_file=False):
 	certificate_doc = frappe.get_doc("Mishkah Certificate", certificate)
 	template = Image.open(get_file_path(certificate_doc.certificate_image))
 	draw = ImageDraw.Draw(template)
@@ -68,12 +68,13 @@ def generate_certificate(certificate,student_name, reason_for_certificate,certif
 	draw.text(name_position, student_name, font_color, font=name_font)
 	draw.text(reason_position, reason_for_certificate, font_color, font=reason_font)
 	draw.text(date_position, certificate_date, font_color, font=date_font)
-	test_file_path = frappe.get_site_path("public", "files", certificate_doc.name + "-test.png")
-	return pil_image_to_base64(template)
-	template.save(test_file_path)
-	certificate_doc.test_certificate = f"/files/{certificate_doc.name}-test.png"
-	certificate_doc.save()
-	return f"/files/{certificate_doc.name}-test.png"
+	if save_as_file:
+		certificate_file_path = frappe.get_site_path("public", "files", certificate_doc.name + "-" + student_name + ".png")
+		template.save(certificate_file_path)
+		return  f"/files/{certificate_doc.name}-{student_name}.png"
+	else:
+		return pil_image_to_base64(template)
+	
 
 
 def get_file_path(file_name):
