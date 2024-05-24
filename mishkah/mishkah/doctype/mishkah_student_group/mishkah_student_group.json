@@ -10,6 +10,7 @@
  "field_order": [
   "student_group_name",
   "group_type",
+  "whatsapp_link",
   "column_break_bk5l",
   "program",
   "level",
@@ -81,11 +82,16 @@
    "label": "Groups",
    "options": "Mishkah Student Group Group",
    "permlevel": 1
+  },
+  {
+   "fieldname": "whatsapp_link",
+   "fieldtype": "Data",
+   "label": "Whatsapp Link"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-12-10 14:50:08.159222",
+ "modified": "2024-05-23 10:27:08.007224",
  "modified_by": "Administrator",
  "module": "Mishkah",
  "name": "Mishkah Student Group",

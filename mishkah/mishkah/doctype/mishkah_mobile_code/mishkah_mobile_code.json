@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
  "autoname": "field:country_code",
  "creation": "2023-12-19 05:09:29.775740",
@@ -30,7 +31,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-12-19 05:45:31.756323",
+ "modified": "2024-04-22 13:19:59.655905",
  "modified_by": "Administrator",
  "module": "Mishkah",
  "name": "Mishkah Mobile Code",
@@ -52,7 +53,10 @@
  ],
  "quick_entry": 1,
  "search_fields": "country_name",
+ "show_title_field_in_link": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "title_field": "country_name",
+ "translated_doctype": 1
 }

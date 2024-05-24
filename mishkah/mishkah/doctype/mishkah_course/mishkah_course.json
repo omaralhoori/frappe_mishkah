@@ -35,7 +35,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Material Type",
-   "options": "\nEssential Book\nAdditional Book\nRecord\nArticle\nDiscernment Talk\nMagazine\nDiscussion Participation",
+   "options": "\nEssential Book\nAdditional Book\nRecord\nArticle\nDiscernment Talk\nMagazine\nDiscussion Participation\nVideo",
    "reqd": 1
   },
   {
@@ -53,7 +53,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-12-10 05:15:16.111066",
+ "modified": "2024-04-26 02:44:05.227371",
  "modified_by": "Administrator",
  "module": "Mishkah",
  "name": "Mishkah Course",
