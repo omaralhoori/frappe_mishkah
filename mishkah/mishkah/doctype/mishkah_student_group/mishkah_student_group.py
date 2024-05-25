@@ -10,3 +10,7 @@ class MishkahStudentGroup(Document):
 			if s.student == student:
 				self.students.remove(s)
 				return True
+			
+	def on_update(self):
+		self.students_count = len(self.students)
+		self.db_set("students_count", self.students_count)

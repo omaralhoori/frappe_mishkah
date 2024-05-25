@@ -1,0 +1,68 @@
+{
+ "actions": [],
+ "creation": "2024-05-25 09:33:09.392913",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "seen",
+  "reference_doctype",
+  "reference_name",
+  "section_break_dvv3",
+  "error"
+ ],
+ "fields": [
+  {
+   "default": "0",
+   "fieldname": "seen",
+   "fieldtype": "Check",
+   "label": "Seen"
+  },
+  {
+   "fieldname": "reference_doctype",
+   "fieldtype": "Link",
+   "label": "Reference DocType",
+   "options": "DocType"
+  },
+  {
+   "fieldname": "reference_name",
+   "fieldtype": "Data",
+   "label": "Reference Name"
+  },
+  {
+   "fieldname": "section_break_dvv3",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "error",
+   "fieldtype": "Text",
+   "label": "Error"
+  }
+ ],
+ "in_create": 1,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-05-25 09:33:09.392913",
+ "modified_by": "Administrator",
+ "module": "Mishkah",
+ "name": "Mishkah Errors",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

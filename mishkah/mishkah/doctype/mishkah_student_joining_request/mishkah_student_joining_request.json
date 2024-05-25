@@ -30,7 +30,9 @@
   "have_information_about_mishkah",
   "give_reading_time",
   "cooperation_and_commitment",
-  "reason_for_joining"
+  "reason_for_joining",
+  "enrollment_info_section",
+  "whatsapp_group"
  ],
  "fields": [
   {
@@ -183,11 +185,21 @@
    "fieldtype": "Data",
    "label": "Why do you want to join Mishkat?",
    "reqd": 1
+  },
+  {
+   "fieldname": "enrollment_info_section",
+   "fieldtype": "Section Break",
+   "label": "Enrollment Info"
+  },
+  {
+   "fieldname": "whatsapp_group",
+   "fieldtype": "Data",
+   "label": "Whatsapp Group"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-12-19 06:12:38.860909",
+ "modified": "2024-05-25 09:46:44.495155",
  "modified_by": "Administrator",
  "module": "Mishkah",
  "name": "Mishkah Student Joining Request",

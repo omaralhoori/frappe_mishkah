@@ -3,15 +3,21 @@
 
 import frappe
 from frappe.model.document import Document
-
+from frappe import _
 class MishkahStudentJoiningRequest(Document):
-	
+	def after_insert(self):
+		if frappe.db.get_single_value("Mishkah Settings", "auto_approve_new_requests"):
+			self.approve_request(program=frappe.db.get_single_value("Mishkah Settings", "default_joining_program"),
+						level=frappe.db.get_single_value("Mishkah Settings", "default_joining_level"))
+			if self.whatsapp_group:
+				frappe.msgprint(_("Your whatsapp group link:") + "\n" + f"<a href='{self.whatsapp_group}'>{self.whatsapp_group}</a>")	
 	@frappe.whitelist()
 	def approve_request(self, program, level=None):
 		student = self.create_student()
 		program_enrollment = self.create_program_enrollment(student, program)
 		if level:
 			self.create_level_enrollment(program_enrollment, level)
+			self.add_student_to_group(program=program, level=level, student=student.name)
 		self.db_set("status", "Approved")
 		return {"success_key": 1}
 	
@@ -52,3 +58,33 @@ class MishkahStudentJoiningRequest(Document):
 
 		enrollment.insert(ignore_permissions=True)
 		return enrollment
+	
+	def add_student_to_group(self, program, level, student):
+		groups = frappe.db.sql("""
+		SELECT name FROM `tabMishkah Student Group` 
+					  WHERE program=%(program)s AND level=%(level)s AND students_count < max_students
+					  ORDER BY students_count desc
+		""", {"program": program, "level": level}, as_dict=True)
+		if len(groups) == 0:
+			frappe.get_doc({
+				"doctype": "Mishkah Errors",
+				"reference_doctype": self.doctype,
+				"reference_name": self.name,
+				"error": f"""Cannot find available group for student:{self.country_code} - {self.mobile_phone}, program:{program}, level :{level}"""
+			}).insert(ignore_permissions=True)
+			return
+		student_group = frappe.get_doc("Mishkah Student Group", groups[0].get('name'), )
+		student_row = student_group.append("students")
+		student_row.student = student
+		student_row.is_active = 1
+		student_group.save(ignore_permissions=True)
+		self.db_set("whatsapp_group", student_group.whatsapp_link)
+
+# @frappe.whitelist(allow_guest=True)
+# def test_groups(program, level):
+# 	return frappe.db.sql("""
+# 		SELECT name FROM `tabMishkah Student Group` 
+# 					  WHERE program=%(program)s AND level=%(level)s AND students_count < max_students
+# 					  ORDER BY students_count desc
+# 		""", {"program": program, "level": level}, as_dict=True)
+	

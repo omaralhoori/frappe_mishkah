@@ -11,6 +11,8 @@ class MishkahProgressEditingTool(Document):
 @frappe.whitelist()
 def get_students(student_group, level_stage):
 	groups = get_groups(student_group)
+	if len(groups) == 0:
+		frappe.throw("Unable to find student groups")
 	students = get_student_progresses(groups)
 	courses = get_courses_per_stage(level_stage, groups)
 	return {
@@ -32,6 +34,8 @@ def get_courses_per_stage(level_stage, groups):
 
 def get_student_progresses(groups):
 	groups_joined = ",".join(groups)
+	print("lllllllllllllllllllllllllllllllll")
+	print(groups_joined)
 	return frappe.db.sql("""
 		SELECT tbl1.student,tbl4.name as level_enrollment, tbl1.student_name, GROUP_CONCAT(tbl5.name) as progresses,GROUP_CONCAT(tbl5.course) as courses, GROUP_CONCAT(tbl5.points) as points
 		FROM `tabMishkah Student Group Student` as tbl1
@@ -45,6 +49,20 @@ def get_student_progresses(groups):
 	""".format(groups_joined=groups_joined), as_dict=True)
 
 def get_groups(student_group, current_level=None):
+	group_type = frappe.db.get_value("Mishkah Student Group", student_group, ['group_type' ])#frappe.get_doc("Mishkah Student Group", student_group)
+	if group_type == 'Student Subgroup':
+		return [f"'{student_group}'"]#[student.student for student in group_doc.students if student.is_active]
+	child_level = group_type
+	all_groups= []
+	child_groups = frappe.db.get_all("Mishkah Student Group", {"parent_mishkah_student_group": student_group}, ['name'])
+	for group in child_groups:
+		if current_level:
+			check_group_order(current_level, child_level)
+		groups = get_groups(group.name, child_level)
+		all_groups.extend(groups)
+	return all_groups
+
+def get_groups_by_child(student_group, current_level=None):
 	group_doc = frappe.get_doc("Mishkah Student Group", student_group)
 	if group_doc.group_type == 'Student Subgroup':
 		return [f"'{student_group}'"]#[student.student for student in group_doc.students if student.is_active]

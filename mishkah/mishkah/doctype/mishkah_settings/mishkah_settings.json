@@ -10,6 +10,8 @@
   "joining_settings_section",
   "default_joining_program",
   "default_joining_level",
+  "column_break_90u8",
+  "auto_approve_new_requests",
   "section_break_zg6c",
   "current_educational_term"
  ],
@@ -45,13 +47,23 @@
    "label": "Current Educational Term",
    "options": "Mishkah Educational Term",
    "reqd": 1
+  },
+  {
+   "fieldname": "column_break_90u8",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "auto_approve_new_requests",
+   "fieldtype": "Check",
+   "label": "Auto Approve New Requests"
   }
  ],
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2023-12-10 05:35:03.889703",
+ "modified": "2024-05-25 10:12:32.304856",
  "modified_by": "Administrator",
  "module": "Mishkah",
  "name": "Mishkah Settings",
