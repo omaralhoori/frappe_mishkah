@@ -23,14 +23,17 @@
    "fieldname": "user",
    "fieldtype": "Link",
    "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
    "label": "User",
    "options": "User",
-   "reqd": 1
+   "reqd": 1,
+   "unique": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-12-10 06:23:42.397646",
+ "modified": "2024-06-02 15:20:19.591473",
  "modified_by": "Administrator",
  "module": "Mishkah",
  "name": "Mishkah Instructor",
@@ -68,7 +71,7 @@
    "write": 1
   }
  ],
- "search_fields": "instructor_name",
+ "search_fields": "instructor_name, user",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
