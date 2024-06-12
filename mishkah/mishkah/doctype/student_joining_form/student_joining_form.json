@@ -1,36 +1,36 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "MSTD-.YY.-.#####",
- "creation": "2023-12-09 18:41:01.472922",
+ "creation": "2024-06-12 10:01:35.529855",
  "default_view": "List",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "program_level",
+  "column_break_6go2",
+  "student_group",
+  "section_break_jned",
   "first_name",
-  "column_break_yqja",
+  "column_break_i2o6",
   "middle_name",
-  "column_break_3ti7",
+  "column_break_blql",
   "last_name",
-  "section_break_jem7",
-  "student_email",
-  "column_break_kmlp",
-  "student_mobile",
-  "section_break_imvp",
+  "section_break_smba",
+  "mobile_phone",
+  "column_break_uuzu",
   "nationality",
-  "section_break_4pjq",
   "country_of_residence",
+  "section_break_emyr",
+  "gender",
   "age_category",
   "educational_level",
-  "column_break_hc15",
+  "column_break_5uur",
   "employed",
   "marital_status",
   "childrenif_exist",
   "specialty",
-  "section_break_t4sn",
-  "user",
-  "student_name"
+  "amended_from"
  ],
  "fields": [
   {
@@ -41,7 +41,7 @@
    "reqd": 1
   },
   {
-   "fieldname": "column_break_yqja",
+   "fieldname": "column_break_i2o6",
    "fieldtype": "Column Break"
   },
   {
@@ -52,7 +52,7 @@
    "reqd": 1
   },
   {
-   "fieldname": "column_break_3ti7",
+   "fieldname": "column_break_blql",
    "fieldtype": "Column Break"
   },
   {
@@ -63,29 +63,20 @@
    "reqd": 1
   },
   {
-   "fieldname": "section_break_jem7",
+   "fieldname": "section_break_smba",
    "fieldtype": "Section Break"
   },
   {
-   "fieldname": "student_email",
+   "fieldname": "mobile_phone",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "Student Email"
-  },
-  {
-   "fieldname": "column_break_kmlp",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "student_mobile",
-   "fieldtype": "Data",
-   "label": "Student Mobile",
+   "label": "Mobile No",
    "reqd": 1,
    "unique": 1
   },
   {
-   "fieldname": "section_break_imvp",
-   "fieldtype": "Section Break"
+   "fieldname": "column_break_uuzu",
+   "fieldtype": "Column Break"
   },
   {
    "fieldname": "nationality",
@@ -95,40 +86,39 @@
    "reqd": 1
   },
   {
-   "fieldname": "section_break_4pjq",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "user",
-   "fieldtype": "Link",
-   "label": "User",
-   "options": "User"
-  },
-  {
-   "fieldname": "student_name",
-   "fieldtype": "Data",
-   "label": "Student Name"
-  },
-  {
    "fieldname": "country_of_residence",
    "fieldtype": "Link",
    "label": "Country of Residence",
-   "options": "Country"
+   "options": "Country",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_emyr",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "gender",
+   "fieldtype": "Select",
+   "label": "Gender",
+   "options": "\nFemale\nMale",
+   "reqd": 1
   },
   {
    "fieldname": "age_category",
    "fieldtype": "Select",
    "label": "Age Category",
-   "options": "\nUnder 18\n18-30\n31-40\n41-50\n51-60\nAbove 60"
+   "options": "\nUnder 18\n18-30\n31-40\n41-50\n51-60\nAbove 60",
+   "reqd": 1
   },
   {
    "fieldname": "educational_level",
    "fieldtype": "Link",
    "label": "Educational Level",
-   "options": "Mishkah Educational Level"
+   "options": "Mishkah Educational Level",
+   "reqd": 1
   },
   {
-   "fieldname": "column_break_hc15",
+   "fieldname": "column_break_5uur",
    "fieldtype": "Column Break"
   },
   {
@@ -154,17 +144,44 @@
    "label": "Specialty"
   },
   {
-   "fieldname": "section_break_t4sn",
+   "fieldname": "program_level",
+   "fieldtype": "Link",
+   "label": "Program Level",
+   "options": "Mishkah Program Level",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_6go2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "student_group",
+   "fieldtype": "Link",
+   "label": "Student Group",
+   "options": "Mishkah Student Group",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_jned",
    "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Student Joining Form",
+   "print_hide": 1,
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
+ "is_submittable": 1,
  "links": [],
- "modified": "2024-06-12 10:54:02.702696",
+ "modified": "2024-06-12 10:49:14.350472",
  "modified_by": "Administrator",
  "module": "Mishkah",
- "name": "Mishkah Student",
- "naming_rule": "Expression (old style)",
+ "name": "Student Joining Form",
  "owner": "Administrator",
  "permissions": [
   {
@@ -180,22 +197,15 @@
    "write": 1
   },
   {
-   "create": 1,
-   "delete": 1,
    "read": 1,
-   "role": "Mishkah Data Manager",
-   "write": 1
-  },
-  {
-   "create": 1,
-   "read": 1,
-   "role": "Mishkah Data Entry Specialist",
+   "role": "Mishkah Joining Request Approver",
    "write": 1
   }
  ],
+ "search_fields": "mobile_phone",
  "show_title_field_in_link": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "title_field": "student_name"
+ "title_field": "mobile_phone"
 }
