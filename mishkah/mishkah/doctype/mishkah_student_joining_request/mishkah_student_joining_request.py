@@ -22,15 +22,22 @@ class MishkahStudentJoiningRequest(Document):
 		return {"success_key": 1}
 	
 	def create_student(self):
-		if frappe.db.exists("Mishkah Student", {"student_mobile": self.mobile_phone}):
+		if frappe.db.exists("Mishkah Student", {"student_mobile": self.country_code + self.mobile_phone}):
 			frappe.throw("Student already exists!")
 		student_doc = frappe.get_doc({
 			"doctype": "Mishkah Student",
 			"first_name": self.first_name,
 			"middle_name": self.middle_name,
 			"last_name": self.last_name,
-			"student_mobile": self.mobile_phone,
-			"nationality": self.nationality
+			"student_mobile": self.country_code+self.mobile_phone,
+			"nationality": self.nationality,
+			"employed": 1 if self.employed == "Yes" else 0,
+			"marital_status": self.marital_status,
+			 "childrenif_exist": self.childrenif_exist,
+			 "specialty": self.specialty,
+			 "age_category": self.age_category,
+			 "educational_level": self.educational_level,
+			 "country_of_residence": self.country_of_residence
 		})
 		student_doc.save(ignore_permissions=True)
 		return student_doc
@@ -62,7 +69,11 @@ class MishkahStudentJoiningRequest(Document):
 	def add_student_to_group(self, program, level, student):
 		groups = frappe.db.sql("""
 		SELECT name FROM `tabMishkah Student Group` 
-					  WHERE program=%(program)s AND level=%(level)s AND students_count < max_students
+					  WHERE 
+						 program=%(program)s 
+						 AND level=%(level)s 
+						 AND group_type='Student Subgroup'
+						 AND students_count < max_students
 					  ORDER BY students_count desc
 		""", {"program": program, "level": level}, as_dict=True)
 		if len(groups) == 0:

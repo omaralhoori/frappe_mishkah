@@ -23,6 +23,11 @@
   "gender",
   "age_category",
   "educational_level",
+  "section_break_ij0i",
+  "specialty",
+  "marital_status",
+  "childrenif_exist",
+  "employed",
   "section_break_fnta",
   "reader_before_mishkah",
   "hear_about",
@@ -195,11 +200,37 @@
    "fieldname": "whatsapp_group",
    "fieldtype": "Data",
    "label": "Whatsapp Group"
+  },
+  {
+   "fieldname": "section_break_ij0i",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "specialty",
+   "fieldtype": "Data",
+   "label": "Specialty"
+  },
+  {
+   "fieldname": "marital_status",
+   "fieldtype": "Select",
+   "label": "Marital Status",
+   "options": "\nSingle\nMarried\nWidowed\nDivorced"
+  },
+  {
+   "fieldname": "childrenif_exist",
+   "fieldtype": "Int",
+   "label": "Children(If exist)"
+  },
+  {
+   "fieldname": "employed",
+   "fieldtype": "Select",
+   "label": "Employed",
+   "options": "\nYes\nNo"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-05-25 09:46:44.495155",
+ "modified": "2024-07-04 23:31:37.160082",
  "modified_by": "Administrator",
  "module": "Mishkah",
  "name": "Mishkah Student Joining Request",
