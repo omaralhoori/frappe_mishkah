@@ -5,6 +5,9 @@ import frappe
 from frappe.model.document import Document
 from frappe import _
 class MishkahStudentJoiningRequest(Document):
+	def before_insert(self):
+		if frappe.db.exists("Mishkah Student Joining Request", {"mobile_phone": self.mobile_phone}):
+			frappe.throw(_("This mobile number has been registered in Mishkah before"))
 	def after_insert(self):
 		if frappe.db.get_single_value("Mishkah Settings", "auto_approve_new_requests"):
 			self.approve_request(program=frappe.db.get_single_value("Mishkah Settings", "default_joining_program"),
