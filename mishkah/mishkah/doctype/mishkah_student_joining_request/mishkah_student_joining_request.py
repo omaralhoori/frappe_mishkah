@@ -6,6 +6,10 @@ from frappe.model.document import Document
 from frappe import _
 class MishkahStudentJoiningRequest(Document):
 	def before_insert(self):
+		if self.gender == 'Male':
+			frappe.throw("هذا برنامج مخصص للإناث فقط")
+		if self.age_category == 'Under 18':
+			frappe.throw("لا يمكننا اسقبال طلبك")
 		if frappe.db.exists("Mishkah Student Joining Request", {"mobile_phone": self.mobile_phone}):
 			frappe.throw(_("This mobile number has been registered in Mishkah before"))
 	def after_insert(self):
@@ -25,14 +29,20 @@ class MishkahStudentJoiningRequest(Document):
 		return {"success_key": 1}
 	
 	def create_student(self):
-		if frappe.db.exists("Mishkah Student", {"student_mobile": self.country_code + self.mobile_phone}):
+		mobile = self.mobile_phone
+		if mobile.startswith("0"):
+			mobile = mobile[1:]
+		if mobile.startswith("\u0660"):
+			mobile = mobile[1:]
+		mobile = self.country_code + mobile
+		if frappe.db.exists("Mishkah Student", {"student_mobile": mobile}):
 			frappe.throw("Student already exists!")
 		student_doc = frappe.get_doc({
 			"doctype": "Mishkah Student",
 			"first_name": self.first_name,
 			"middle_name": self.middle_name,
 			"last_name": self.last_name,
-			"student_mobile": self.country_code+self.mobile_phone,
+			"student_mobile": mobile,
 			"nationality": self.nationality,
 			"employed": 1 if self.employed == "Yes" else 0,
 			"marital_status": self.marital_status,
@@ -102,3 +112,7 @@ class MishkahStudentJoiningRequest(Document):
 # 					  ORDER BY students_count desc
 # 		""", {"program": program, "level": level}, as_dict=True)
 	
+
+@frappe.whitelist()
+def mark_student_whatsapp_send(group_student):
+	frappe.db.set_value("Mishkah Student Group Student", group_student, "link_sent", 1)

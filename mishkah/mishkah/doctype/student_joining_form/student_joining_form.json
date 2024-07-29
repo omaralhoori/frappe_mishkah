@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
  "creation": "2024-06-12 10:01:35.529855",
  "default_view": "List",
@@ -178,7 +179,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-06-12 10:49:14.350472",
+ "modified": "2024-07-21 13:29:50.598842",
  "modified_by": "Administrator",
  "module": "Mishkah",
  "name": "Student Joining Form",
