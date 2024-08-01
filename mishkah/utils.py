@@ -23,3 +23,30 @@ def cancel_students():
             frappe.delete_doc("Mishkah Program Enrollment",program_enrollment)
         frappe.delete_doc("Mishkah Student", student)
         frappe.db.commit()
+
+
+def fix_numbers():
+    data = frappe.db.get_all("Mishkah Student Joining Request", ["name","country_code", "mobile_phone"])
+    for item in data:
+        name, code, mobile = item.get('name'), item.get('country_code'), item.get('mobile_phone')
+        if margin:=check_mobile(mobile):
+            new_mobile = fix_mobile_no(mobile,margin)
+            student = frappe.db.get_value("Mishkah Student", {"student_mobile": code + mobile}, ["name"])
+            # if frappe.db.exists("Mishkah Student", {"student_mobile": code + new_mobile}):
+            #     continue
+            try:
+                frappe.db.set_value("Mishkah Student", student, "student_mobile", code + new_mobile)
+                frappe.db.set_value("Mishkah Student Joining Request", name, "mobile_phone", new_mobile)
+            except:
+                pass
+
+def check_mobile(mobile):
+    if mobile.startswith("+"): return 1
+    if mobile.startswith("0"): return 1
+    if mobile.startswith("00"): return 2
+    if mobile.startswith("\u0660"): return 1
+    if mobile.startswith("\u0660\u0660"): return 2
+    return 0
+
+def fix_mobile_no(mobile, margin):
+    return mobile[margin:]
