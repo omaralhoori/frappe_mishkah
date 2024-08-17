@@ -10,8 +10,8 @@ class MishkahStudentJoiningRequest(Document):
 			frappe.throw("هذا برنامج مخصص للإناث فقط")
 		if self.age_category == 'Under 18':
 			frappe.throw("لا يمكننا اسقبال طلبك")
-		if frappe.db.exists("Mishkah Student Joining Request", {"mobile_phone": self.mobile_phone}):
-			frappe.throw(_("This mobile number has been registered in Mishkah before"))
+		# if frappe.db.exists("Mishkah Student Joining Request", {"mobile_phone": self.mobile_phone}):
+		# 	frappe.throw(_("This mobile number has been registered in Mishkah before"))
 	def after_insert(self):
 		if frappe.db.get_single_value("Mishkah Settings", "auto_approve_new_requests"):
 			self.approve_request(program=frappe.db.get_single_value("Mishkah Settings", "default_joining_program"),
@@ -29,11 +29,11 @@ class MishkahStudentJoiningRequest(Document):
 		return {"success_key": 1}
 	
 	def create_student(self):
-		mobile = self.mobile_phone
-		if mobile.startswith("0"):
-			mobile = mobile[1:]
-		if mobile.startswith("\u0660"):
-			mobile = mobile[1:]
+		mobile = str(self.mobile_phone)
+		# if mobile.startswith("0"):
+		# 	mobile = mobile[1:]
+		# if mobile.startswith("\u0660"):
+		# 	mobile = mobile[1:]
 		mobile = self.country_code + mobile
 		if frappe.db.exists("Mishkah Student", {"student_mobile": mobile}):
 			frappe.throw("Student already exists!")
@@ -94,7 +94,7 @@ class MishkahStudentJoiningRequest(Document):
 				"doctype": "Mishkah Errors",
 				"reference_doctype": self.doctype,
 				"reference_name": self.name,
-				"error": f"""Cannot find available group for student:{self.country_code} - {self.mobile_phone}, program:{program}, level :{level}"""
+				"error": f"""Cannot find available group for student:{self.country_code} - {str(self.mobile_phone)}, program:{program}, level :{level}"""
 			}).insert(ignore_permissions=True)
 			return
 		student_group = frappe.get_doc("Mishkah Student Group", groups[0].get('name'), )
