@@ -34,16 +34,15 @@ def get_courses_per_stage(level_stage, groups):
 
 def get_student_progresses(groups):
 	groups_joined = ",".join(groups)
-	print("lllllllllllllllllllllllllllllllll")
-	print(groups_joined)
 	return frappe.db.sql("""
 		SELECT tbl1.student,tbl4.name as level_enrollment, tbl1.student_name, GROUP_CONCAT(tbl5.name) as progresses,GROUP_CONCAT(tbl5.course) as courses, GROUP_CONCAT(tbl5.points) as points
 		FROM `tabMishkah Student Group Student` as tbl1
 		INNER JOIN `tabMishkah Student Group` as tbl2 on tbl2.name=tbl1.parent
 		INNER JOIN `tabMishkah Program Enrollment` as tbl3 ON tbl1.student=tbl3.student AND tbl2.program=tbl3.program
-		INNER JOIN `tabMishkah Level Enrollment` as tbl4 ON tbl4.program_enrollment=tbl3.name AND tbl4.level=tbl2.level AND enrollment_status='Ongoing'
+		INNER JOIN `tabMishkah Student` as tbl6 ON tbl6.name=tbl1.student
+		INNER JOIN `tabMishkah Level Enrollment` as tbl4 ON tbl4.program_enrollment=tbl3.name AND tbl4.level=tbl2.level AND tbl4.enrollment_status='Ongoing'
 		LEFT JOIN `tabMishkah Course Progress` as tbl5 ON tbl5.level_enrollment=tbl4.name
-		WHERE tbl1.parent IN ({groups_joined}) AND tbl1.is_active=1
+		WHERE tbl1.parent IN ({groups_joined}) AND tbl1.is_active=1 AND tbl6.enrollment_status="عضوية فعالة"
 		GROUP BY tbl1.student
 		ORDER BY tbl1.student_name
 	""".format(groups_joined=groups_joined), as_dict=True)
@@ -86,8 +85,6 @@ def check_group_order(current_level, child_level):
 
 @frappe.whitelist()
 def set_student_mark(enrollment, points, course, progress_name=None):
-	print("wwwwwwwwwwwwwwwww")
-	print(progress_name, points)
 	if progress_name:
 		progress = frappe.get_doc("Mishkah Course Progress",progress_name)
 		progress.points = points

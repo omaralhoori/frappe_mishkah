@@ -39,7 +39,8 @@ class StudentJoiningForm(Document):
 			"employed": self.employed,
 			"marital_status": self.marital_status,
 			"childrenif_exist": self.childrenif_exist,
-			"specialty": self.specialty
+			"specialty": self.specialty,
+			"enrollment_status":"عضوية فعالة"
 		})
 		student_doc.insert(ignore_permissions=True)
 		return student_doc

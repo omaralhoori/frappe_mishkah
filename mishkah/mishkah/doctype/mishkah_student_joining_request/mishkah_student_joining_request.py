@@ -50,7 +50,8 @@ class MishkahStudentJoiningRequest(Document):
 			 "specialty": self.specialty,
 			 "age_category": self.age_category,
 			 "educational_level": self.educational_level,
-			 "country_of_residence": self.country_of_residence
+			 "country_of_residence": self.country_of_residence,
+			 "enrollment_status":"عضوية فعالة"
 		})
 		student_doc.save(ignore_permissions=True)
 		return student_doc

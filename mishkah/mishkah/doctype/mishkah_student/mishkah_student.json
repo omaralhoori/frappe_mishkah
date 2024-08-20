@@ -30,7 +30,9 @@
   "specialty",
   "section_break_t4sn",
   "user",
-  "student_name"
+  "student_name",
+  "section_break_8xqv",
+  "enrollment_status"
  ],
  "fields": [
   {
@@ -156,11 +158,22 @@
   {
    "fieldname": "section_break_t4sn",
    "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "section_break_8xqv",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "enrollment_status",
+   "fieldtype": "Select",
+   "label": "Enrollment Status",
+   "options": "\n\u0639\u0636\u0648\u064a\u0629 \u0641\u0639\u0627\u0644\u0629\n\u0639\u0636\u0648\u064a\u0629 \u0645\u062a\u062c\u0645\u062f\u0629\n\u0645\u0646\u0633\u062d\u0628\n\u0645\u0641\u0635\u0648\u0644",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-06-12 10:54:02.702696",
+ "modified": "2024-08-19 15:48:48.693021",
  "modified_by": "Administrator",
  "module": "Mishkah",
  "name": "Mishkah Student",
