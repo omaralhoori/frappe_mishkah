@@ -27,7 +27,7 @@ frappe.ui.form.on("Mishkah Progress Editing Tool", {
 		var body = frm.events.render_excel_table_body(frm, table_data['students'], table_data['courses'])
 		$(frm.fields_dict['students'].wrapper)
 			.html(`
-			<div class="table-responsive">
+			<div class="table-responsive wrapper">
 			<table class="table table-striped">
 			${header}
 			${body}
@@ -44,7 +44,7 @@ frappe.ui.form.on("Mishkah Progress Editing Tool", {
     render_excel_table_header(frm, courses){
         var columns= '';
         for (var course of courses){
-            columns += `<th course-id="${course.course}" course-points="${course.course_points}" >${course.course_name} <small>(${course.course_points})</small></th>`
+            columns += `<th course-id="${course.course}" class="first-row sticky-col" course-points="${course.course_points}" >${course.course_name} <small>(${course.course_points})</small></th>`
         }
         var html = `
             <thead> 
@@ -81,16 +81,19 @@ frappe.ui.form.on("Mishkah Progress Editing Tool", {
 			var levelEnrollment = row['level_enrollment']
             for (var i in courses){
 				var course = courses[i]
-				
+				var secondClass = ""
+				if (i == 0){
+					//secondClass = "second-col"
+				}
 				var courseIndex = student_courses.indexOf(course['course'])
 				if (courseIndex >= 0){
 					var studentPoints = parseFloat(student_points[courseIndex]).toFixed(1)
 					var progressName = student_progresses[courseIndex]
-					columns += `<td style="min-width:150px;" enrollment-id="${levelEnrollment}" course="${course['course']}" max-points=${course['course_points']}>
+					columns += `<td style="min-width:150px;" class="${secondClass}" enrollment-id="${levelEnrollment}" course="${course['course']}" max-points=${course['course_points']}>
 					${frappe.render_mark_input(studentPoints, course['course'], course['course_points'], progressName)}
 					</td>`
 				}else{
-					columns += `<td style="min-width:200px;" enrollment-id="${levelEnrollment}" course="${course['course']}" max-points=${course['course_points']}>
+					columns += `<td style="min-width:200px;" class="${secondClass}" enrollment-id="${levelEnrollment}" course="${course['course']}" max-points=${course['course_points']}>
 					<button class="btn btn-sm" onclick="frappe.setCourseMark(this, 100)" >Full</button>
 					<button class="btn btn-sm" onclick="frappe.setCourseMark(this, 50)">Half</button>
 					<button class="btn btn-sm" onclick="frappe.setCourseMark(this, 0)">Zero</button>
@@ -100,7 +103,7 @@ frappe.ui.form.on("Mishkah Progress Editing Tool", {
             }
 			
             html += ` <tr>
-				<td style="min-width:150px;" student-id="${studentId}">${studentName}</td>
+				<td style="min-width:150px;" class="first-col sticky-col" student-id="${studentId}">${studentName}</td>
                 ${columns}
             </tr>
             `

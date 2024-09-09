@@ -1,0 +1,39 @@
+.view {
+    margin: auto;
+    width: 600px;
+  }
+  
+  .wrapper {
+    position: relative;
+    overflow: auto;
+    border: 1px solid black;
+    white-space: nowrap;
+    max-height: 700px;
+  }
+  
+  .sticky-col {
+    position: -webkit-sticky;
+    position: sticky;
+    background-color: white;
+    z-index: 10000;
+  }
+  
+  .first-col {
+    width: 100px;
+    min-width: 100px;
+    max-width: 100px;
+    left: 0px;
+  }
+  .first-row {
+    /* height: 100px; */
+    min-height: 100px;
+    /* max-height: 100px; */
+    top: 0px;
+  }
+  
+  .second-col {
+    width: 150px;
+    min-width: 150px;
+    max-width: 150px;
+    left: 100px;
+  }
