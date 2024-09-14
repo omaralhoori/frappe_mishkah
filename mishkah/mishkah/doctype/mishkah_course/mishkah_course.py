@@ -7,7 +7,7 @@ from frappe.model.document import Document
 class MishkahCourse(Document):
 	@frappe.whitelist()
 	def update_course_enrollment_points(self, old_points, new_points):
-		frappe.only_for("System Manager")
+		frappe.only_for("Mishkah Data Manager")
 		new_point_ratio = new_points / old_points
 		frappe.db.sql("""
 			UPDATE `tabMishkah Course Progress`
