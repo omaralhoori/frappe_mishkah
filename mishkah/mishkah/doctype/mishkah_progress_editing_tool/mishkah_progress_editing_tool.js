@@ -79,6 +79,7 @@ frappe.ui.form.on("Mishkah Progress Editing Tool", {
 			var studentName = row['student_name']
 			var studentId = row['student']
 			var levelEnrollment = row['level_enrollment']
+			var groupId = row['group_id']
             for (var i in courses){
 				var course = courses[i]
 				var secondClass = ""
@@ -89,11 +90,11 @@ frappe.ui.form.on("Mishkah Progress Editing Tool", {
 				if (courseIndex >= 0){
 					var studentPoints = parseFloat(student_points[courseIndex]).toFixed(1)
 					var progressName = student_progresses[courseIndex]
-					columns += `<td style="min-width:150px;" class="${secondClass}" enrollment-id="${levelEnrollment}" course="${course['course']}" max-points=${course['course_points']}>
+					columns += `<td style="min-width:150px;" class="${secondClass}" group-id="${groupId}" student-id="${studentId}" enrollment-id="${levelEnrollment}" course="${course['course']}" max-points=${course['course_points']}>
 					${frappe.render_mark_input(studentPoints, course['course'], course['course_points'], progressName)}
 					</td>`
 				}else{
-					columns += `<td style="min-width:200px;" class="${secondClass}" enrollment-id="${levelEnrollment}" course="${course['course']}" max-points=${course['course_points']}>
+					columns += `<td style="min-width:200px;" class="${secondClass}" group-id="${groupId}" student-id="${studentId}" enrollment-id="${levelEnrollment}" course="${course['course']}" max-points=${course['course_points']}>
 					<button class="btn btn-sm" onclick="frappe.setCourseMark(this, 100)" >Full</button>
 					<button class="btn btn-sm" onclick="frappe.setCourseMark(this, 50)">Half</button>
 					<button class="btn btn-sm" onclick="frappe.setCourseMark(this, 0)">Zero</button>
@@ -126,6 +127,8 @@ frappe.render_mark_input = (studentPoints, courseId, coursPoints, progressName) 
 frappe.coursePointChanged = (e) => {
 	var parentNode = e.parentNode
 	var enrollment = parentNode.getAttribute('enrollment-id')
+	var group = parentNode.getAttribute('group-id')
+	var student = parentNode.getAttribute('student-id')
 	var maxPoints = parentNode.getAttribute('max-points')
 	var courseId = parentNode.getAttribute('course')
 	var progressName = e.getAttribute('progress-name')
@@ -139,6 +142,8 @@ frappe.coursePointChanged = (e) => {
 					"points": points,
 					"course": courseId,
 					"progress_name": progressName,
+					"group": group,
+					"student": student
 				},
 				callback: res => {
 					if (! res.message.is_success){
@@ -155,6 +160,8 @@ frappe.coursePointChanged = (e) => {
 frappe.setCourseMark = (e, markPercentage) => {
 	var parentNode = e.parentNode
 	var enrollment = parentNode.getAttribute('enrollment-id')
+	var group = parentNode.getAttribute('group-id')
+	var student = parentNode.getAttribute('student-id')
 	var maxPoints = parentNode.getAttribute('max-points')
 	var courseId = parentNode.getAttribute('course')
 	var points = Number(maxPoints) * markPercentage / 100
@@ -165,7 +172,9 @@ frappe.setCourseMark = (e, markPercentage) => {
 			args: {
 				"enrollment": enrollment,
 				"points": points,
-				"course": courseId
+				"course": courseId,
+				"group": group,
+				"student": student
 			},
 			callback: res => {
 				if (! res.message.is_success){

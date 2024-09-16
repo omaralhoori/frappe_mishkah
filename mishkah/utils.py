@@ -1,4 +1,4 @@
-import pandas as pd
+# import pandas as pd
 import frappe
 def cancel_students():
     sheet = pd.read_excel("cancel_students.xlsx", )
@@ -50,3 +50,45 @@ def check_mobile(mobile):
 
 def fix_mobile_no(mobile, margin):
     return mobile[margin:]
+
+
+def update_course_progress():
+    frappe.db.sql("""
+        update `tabMishkah Course Progress` as tbl1
+            INNER JOIN `tabMishkah Level Enrollment` as tbl2 ON tbl1.level_enrollment=tbl2.name
+            INNER JOIN `tabMishkah Program Enrollment` as tbl3 ON tbl2.program_enrollment=tbl3.name
+            INNER JOIN `tabMishkah Student Group Student` as tbl4 ON tbl3.student=tbl4.student
+        SET tbl1.student=tbl3.student, 
+            tbl1.student_group=tbl4.parent
+        WHERE tbl1.creation>'2024-09-15 10:06:48.239159'
+""")
+
+def update_course_student():
+    frappe.db.sql("""
+        update `tabMishkah Course Progress` as tbl1
+            INNER JOIN `tabMishkah Level Enrollment` as tbl2 ON tbl1.level_enrollment=tbl2.name
+            INNER JOIN `tabMishkah Program Enrollment` as tbl3 ON tbl2.program_enrollment=tbl3.name
+        SET tbl1.student=tbl3.student
+""")
+
+def update_course_group():
+    frappe.db.sql("""
+        update `tabMishkah Course Progress` as tbl1
+            INNER JOIN `tabMishkah Student Group Student` as tbl4 ON tbl1.student=tbl4.student
+        SET tbl1.student_group=tbl4.parent
+""")
+ 
+    
+def update_course_studentold():
+    enrollments = frappe.db.get_all("Mishkah Program Enrollment", ["name", "student"])
+    for enrollment in enrollments:
+        level_enrollments = frappe.db.get_all("Mishkah Level Enrollment", {"program_enrollment": enrollment.name}, ['name'])
+        for level_enrollment in level_enrollments:
+            print(level_enrollment)
+            frappe.db.sql("""
+            UPDATE `tabMishkah Course Progress`
+                SET student=%(student)s
+            WHERE level_enrollment=%(level_enrollment)s
+""", {"level_enrollment": level_enrollment.name, "student": enrollment.student})
+            #frappe.db.set_value("Mishkah Course Progress", {"level_enrollment": level_enrollment.name}, "student", enrollment.student)
+            frappe.db.commit()

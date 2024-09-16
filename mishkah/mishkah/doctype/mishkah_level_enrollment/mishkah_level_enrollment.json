@@ -28,7 +28,8 @@
    "in_standard_filter": 1,
    "label": "Program Enrollment",
    "options": "Mishkah Program Enrollment",
-   "reqd": 1
+   "reqd": 1,
+   "search_index": 1
   },
   {
    "fieldname": "level",
@@ -94,7 +95,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-08-19 22:12:14.563528",
+ "modified": "2024-09-16 01:30:48.703605",
  "modified_by": "Administrator",
  "module": "Mishkah",
  "name": "Mishkah Level Enrollment",

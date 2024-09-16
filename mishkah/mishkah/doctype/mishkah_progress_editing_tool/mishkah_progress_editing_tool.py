@@ -3,6 +3,7 @@
 
 import frappe
 from frappe.model.document import Document
+import time
 
 class MishkahProgressEditingTool(Document):
 	pass
@@ -35,7 +36,7 @@ def get_courses_per_stage(level_stage, groups):
 def get_student_progresses(groups):
 	groups_joined = ",".join(groups)
 	return frappe.db.sql("""
-		SELECT tbl1.student,tbl4.name as level_enrollment, tbl1.student_name, GROUP_CONCAT(tbl5.name) as progresses,GROUP_CONCAT(tbl5.course) as courses, GROUP_CONCAT(tbl5.points) as points
+		SELECT tbl1.student,tbl1.parent as group_id, tbl4.name as level_enrollment, tbl1.student_name, GROUP_CONCAT(tbl5.name) as progresses,GROUP_CONCAT(tbl5.course) as courses, GROUP_CONCAT(tbl5.points) as points
 		FROM `tabMishkah Student Group Student` as tbl1
 		INNER JOIN `tabMishkah Student Group` as tbl2 on tbl2.name=tbl1.parent
 		INNER JOIN `tabMishkah Program Enrollment` as tbl3 ON tbl1.student=tbl3.student AND tbl2.program=tbl3.program
@@ -84,11 +85,17 @@ def check_group_order(current_level, child_level):
 
 
 @frappe.whitelist()
-def set_student_mark(enrollment, points, course, progress_name=None):
+def set_student_mark(enrollment, points, course, group, student, progress_name=None):
+	print("99999999999999999999999999999")
+	print(group, student)
+	start = time.time()
+	
 	if progress_name:
 		progress = frappe.get_doc("Mishkah Course Progress",progress_name)
 		progress.points = points
 		progress.save(ignore_permissions=True)
+		end = time.time()
+		print("time1:", end - start)
 		return {
 			"is_success": 1,
 			"points": points,
@@ -103,9 +110,13 @@ def set_student_mark(enrollment, points, course, progress_name=None):
 		"doctype": "Mishkah Course Progress",
 		"level_enrollment": enrollment, 
 		"course": course,
-		"points": points
+		"points": points,
+		"student_group": group,
+		"student": student
 	})
 	progress.insert(ignore_permissions=True)
+	end = time.time()
+	print("time2:", end - start)
 	return {
 		"is_success": 1,
 		"points": points,
