@@ -132,7 +132,8 @@
    "fieldname": "parent_mishkah_student_group",
    "fieldtype": "Link",
    "label": "Parent Mishkah Student Group",
-   "options": "Mishkah Student Group"
+   "options": "Mishkah Student Group",
+   "search_index": 1
   },
   {
    "default": "35",
@@ -151,7 +152,7 @@
  "index_web_pages_for_search": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2024-05-30 10:37:09.969607",
+ "modified": "2024-10-23 11:05:37.201222",
  "modified_by": "Administrator",
  "module": "Mishkah",
  "name": "Mishkah Student Group",

@@ -18,7 +18,15 @@
   "column_break_pysw",
   "enrollment_status",
   "certificate_name",
-  "certificate"
+  "certificate",
+  "section_break_vrte",
+  "student_name",
+  "instructor_name",
+  "certificate_type",
+  "column_break_vtmv",
+  "main_group",
+  "group",
+  "subgroup"
  ],
  "fields": [
   {
@@ -91,11 +99,49 @@
    "fieldname": "certificate",
    "fieldtype": "Attach",
    "label": "Certificate"
+  },
+  {
+   "fieldname": "section_break_vrte",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "student_name",
+   "fieldtype": "Data",
+   "label": "Student Name"
+  },
+  {
+   "fieldname": "instructor_name",
+   "fieldtype": "Data",
+   "label": "Instructor Name"
+  },
+  {
+   "fieldname": "certificate_type",
+   "fieldtype": "Data",
+   "label": "Certificate Type"
+  },
+  {
+   "fieldname": "column_break_vtmv",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "main_group",
+   "fieldtype": "Data",
+   "label": "Main Group"
+  },
+  {
+   "fieldname": "group",
+   "fieldtype": "Data",
+   "label": "Group"
+  },
+  {
+   "fieldname": "subgroup",
+   "fieldtype": "Data",
+   "label": "Subgroup"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-09-16 01:30:48.703605",
+ "modified": "2024-10-23 10:18:22.507699",
  "modified_by": "Administrator",
  "module": "Mishkah",
  "name": "Mishkah Level Enrollment",

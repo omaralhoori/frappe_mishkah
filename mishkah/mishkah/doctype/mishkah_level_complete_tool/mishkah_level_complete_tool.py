@@ -108,3 +108,30 @@ def drop_student_from_groups(program_enrollment, level):
 		group_doc = frappe.get_doc("Mishkah Student Group", group.group_name)
 		group_doc.remove_student(program_enrollment_doc.student)
 		group_doc.save(ignore_permissions=True)
+
+
+@frappe.whitelist()
+def set_level_enrollment_missing_data(level_type):
+	frappe.only_for("System Manager")
+	levels = frappe.db.get_all("Mishkah Level Enrollment", {"level" : level_type})
+	for level in levels:
+		# get student
+		frappe.db.sql("""
+			UPDATE `tabMishkah Level Enrollment` lvl
+				INNER JOIN `tabMishkah Program Enrollment` prog ON lvl.program_enrollment=prog.name
+				INNER JOIN `tabMishkah Student` as std ON std.name=prog.student
+				INNER JOIN `tabMishkah Student Group Student` as grpStd ON grpStd.student=std.name
+				INNER JOIN `tabMishkah Student Group` as grp1 ON grp1.name=grpStd.parent
+				INNER JOIN `tabMishkah Student Group` as grp2 ON grp2.name=grp1.parent_mishkah_student_group
+				INNER JOIN `tabMishkah Student Group` as grp3 ON grp3.name=grp2.parent_mishkah_student_group
+				INNER JOIN `tabMishkah Student Group Instructor` as grpInst ON grpInst.parent=grp1.name
+				INNER JOIN `tabMishkah Instructor` as inst on inst.name=grpInst.instructor
+			SET lvl.student_name=std.student_name, 
+				lvl.instructor_name=inst.instructor_name,
+				lvl.main_group=grp3.student_group_name,
+				lvl.group=grp2.student_group_name,
+				lvl.subgroup=grp1.student_group_name
+			WHERE lvl.name=%(level)s
+""", {"level": level.name})
+	frappe.msgprint("All data has been set")
+		
