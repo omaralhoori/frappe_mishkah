@@ -11,6 +11,7 @@
   "certificate_name",
   "test_certificate",
   "certificate_image",
+  "certificate_pdf",
   "certificate_configuration",
   "name_font",
   "reason_font",
@@ -64,12 +65,18 @@
    "label": "Date Font",
    "options": "Mishkah Font",
    "reqd": 1
+  },
+  {
+   "fieldname": "certificate_pdf",
+   "fieldtype": "Attach",
+   "label": "Certificate PDF",
+   "reqd": 1
   }
  ],
  "image_field": "certificate_image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-12-17 16:39:57.955370",
+ "modified": "2024-10-26 23:36:34.349001",
  "modified_by": "Administrator",
  "module": "Mishkah",
  "name": "Mishkah Certificate",

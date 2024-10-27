@@ -8,6 +8,8 @@
  "engine": "InnoDB",
  "field_order": [
   "level",
+  "certificate_date",
+  "status",
   "column_break_ruxd",
   "get_students",
   "create_level_progress",
@@ -46,13 +48,24 @@
   {
    "fieldname": "column_break_ruxd",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "certificate_date",
+   "fieldtype": "Date",
+   "label": "Certificate Date"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Pending\nIn Progress"
   }
  ],
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2023-12-19 19:18:45.939297",
+ "modified": "2024-10-25 10:17:01.088388",
  "modified_by": "Administrator",
  "module": "Mishkah",
  "name": "Mishkah Level Complete Tool",

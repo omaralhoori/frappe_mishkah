@@ -8,7 +8,8 @@
  "field_order": [
   "student",
   "enrollment",
-  "level_points"
+  "level_points",
+  "instructor"
  ],
  "fields": [
   {
@@ -33,12 +34,19 @@
    "in_list_view": 1,
    "label": "Level Points",
    "reqd": 1
+  },
+  {
+   "fieldname": "instructor",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Instructor",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-12-19 17:36:42.627702",
+ "modified": "2024-10-25 10:15:26.230990",
  "modified_by": "Administrator",
  "module": "Mishkah",
  "name": "Mishkah Level Complete Tool Student",

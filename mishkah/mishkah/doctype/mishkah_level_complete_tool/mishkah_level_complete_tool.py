@@ -12,13 +12,32 @@ class MishkahLevelCompleteTool(Document):
 @frappe.whitelist()
 def get_students(level):
 	students = frappe.db.sql("""
-			SELECT tbl1.name as enrollment, tbl1.total_level_points as points, tbl2.student
+			SELECT tbl1.name as enrollment, tbl1.total_level_points as points, tbl2.student, tbl1.instructor_name
 			FROM `tabMishkah Level Enrollment` tbl1
 			INNER JOIN `tabMishkah Program Enrollment` tbl2 ON tbl1.program_enrollment = tbl2.name
 			WHERE tbl1.level = %(level)s AND tbl1.enrollment_status='Ongoing'
+			LIMIT 100
 						  """, {"level": level}, as_dict=True)
 	return students
 
+
+@frappe.whitelist()
+def create_level_progress_enqueue(level, enrollments):
+	if frappe.db.get_single_value("Mishkah Level Complete Tool", "status") == "In Progress": 
+		return
+	frappe.db.set_single_value("Mishkah Level Complete Tool", "status", "In Progress")
+	frappe.enqueue(
+		"create_level_progress", # python function or a module path as string
+		queue="long", # one of short, default, long
+		timeout=None, # pass timeout manually
+		is_async=True, # if this is True, method is run in worker
+		now=False, # if this is True, method is run directly (not in a worker) 
+		job_name=None, # specify a job name
+		enqueue_after_commit=False, # enqueue the job after the database commit is done at the end of the request
+		at_front=True, # put the job at the front of the queue
+		level=level,
+		 enrollments=enrollments # kwargs are passed to the method as arguments
+	)
 @frappe.whitelist()
 def create_level_progress(level, enrollments):
 	if type(enrollments) == str:
@@ -43,6 +62,8 @@ def create_level_progress(level, enrollments):
 		else:
 			failed_students.append(enrollment)
 			handle_failed_students(enrollment, level)
+		frappe.db.commit()
+	frappe.db.set_single_value("Mishkah Level Complete Tool", "status", "Pending")
 	return {
 		"is_success": True,
 		"failed_students": failed_students
@@ -64,7 +85,7 @@ def handle_level_completion(enrollment, level,program_enrollment, next_level=Non
 
 
 def handle_level_completion_certificate(enrollment):
-	level_enrollment = frappe.db.get_value("Mishkah Level Enrollment", enrollment, ["total_level_points", "level", "program_enrollment"], as_dict=True)
+	level_enrollment = frappe.db.get_value("Mishkah Level Enrollment", enrollment, ["total_level_points", "level", "program_enrollment", "instructor_name"], as_dict=True)
 	if not level_enrollment:
 		frappe.throw("Level Enrollment not found")
 	level_certificate = frappe.db.get_value("Mishkah Level Certificate", {"level": level_enrollment['level']},'name', cache=True) 
@@ -79,7 +100,7 @@ def handle_level_completion_certificate(enrollment):
 	if not graduation_certificate:
 		return
 	student = frappe.db.get_value("Mishkah Program Enrollment", level_enrollment['program_enrollment'], "student_name")
-	certificate_path = generate_certificate(graduation_certificate.certificate, student, "", frappe.utils.nowdate(), save_as_file=True)
+	certificate_path = generate_certificate(graduation_certificate.certificate, student, level_enrollment.instructor_name or "", frappe.utils.nowdate(), save_as_file=True)
 	frappe.db.set_value("Mishkah Level Enrollment", enrollment, "certificate", certificate_path)
 	frappe.db.set_value("Mishkah Level Enrollment", enrollment, "certificate_name", graduation_certificate.certificate)
 def handle_failed_students(enrollment, level):
@@ -134,4 +155,28 @@ def set_level_enrollment_missing_data(level_type):
 			WHERE lvl.name=%(level)s
 """, {"level": level.name})
 	frappe.msgprint("All data has been set")
+
+
+
+def set_certificate_type():
+	levels = frappe.db.sql("""
+		select name, total_level_points, level
+				FROM `tabMishkah Level Enrollment`
+			WHERE total_level_points > 0 AND (certificate_type = "" or certificate_type is null)
+""", as_dict=True)
+	certificates = frappe.db.sql("""
+		select tbl1.certificate, tbl1.min_points, tbl2.level
+			FROM `tabMishkah Level Certificate Item` as tbl1
+			INNER JOIN `tabMishkah Level Certificate` as tbl2 ON tbl1.parent=tbl2.name
+			order BY tbl1.min_points desc
+	""", as_dict=True)
+	for level in levels:
+		graduation_certificate = None
+		for certificate in certificates:
+			if level['level'] == certificate['level'] and level['total_level_points'] >= certificate.min_points:
+				graduation_certificate = certificate
+				break
+		if not graduation_certificate:
+			continue
+		frappe.db.set_value("Mishkah Level Enrollment", level['name'], "certificate_type",graduation_certificate.certificate)
 		

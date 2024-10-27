@@ -7,6 +7,10 @@ frappe.ui.form.on("Mishkah Level Complete Tool", {
 	},
 
     get_students(frm) {
+        if(frm.doc.status != "Pending"){
+            frappe.msgprint("Data in progress")
+            return
+        }
         frappe.call({
             method: "mishkah.mishkah.doctype.mishkah_level_complete_tool.mishkah_level_complete_tool.get_students",
             args: {
@@ -18,29 +22,37 @@ frappe.ui.form.on("Mishkah Level Complete Tool", {
                     row.student = student.student;
                     row.enrollment = student.enrollment;
                     row.level_points = student.points;
+                    row.instructor = student.instructor_name;
                 }
                 frm.refresh_field("level_students");
             }
         });
     },
     create_level_progress(frm){
+        if(frm.doc.status != "Pending"){
+            frappe.msgprint("Data in progress")
+            return
+        }
         var enrollments = [];
+        var instructors = [];
         for (var row of frm.doc.level_students){
             enrollments.push(row.enrollment);
+            // instructors.push(row.instructor);
         }
         frappe.call({
             method: "mishkah.mishkah.doctype.mishkah_level_complete_tool.mishkah_level_complete_tool.create_level_progress",
             args: {
                 "level": frm.doc.level,
-                "enrollments": enrollments
+                "enrollments": enrollments,
             },
             callback: function(r) {
-                if (r.message.is_success){
-                    frappe.msgprint("Level Progress Created Successfully");
-                    frm.reload_doc();
-                }else{
-                    frappe.msgprint("Error Creating Level Progress");
-                }
+                frm.reload_doc();
+                // if (r.message.is_success){
+                //     frappe.msgprint("Level Progress Created Successfully");
+                //     frm.reload_doc();
+                // }else{
+                //     frappe.msgprint("Error Creating Level Progress");
+                // }
             }
         });
 

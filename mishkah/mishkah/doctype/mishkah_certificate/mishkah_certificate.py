@@ -7,6 +7,7 @@ from PIL import Image, ImageDraw, ImageFont
 import json
 from io import BytesIO
 import base64
+import re
 class MishkahCertificate(Document):
 	pass
 
@@ -69,9 +70,11 @@ def generate_certificate(certificate,student_name, reason_for_certificate,certif
 	draw.text(reason_position, reason_for_certificate, font_color, font=reason_font)
 	draw.text(date_position, certificate_date, font_color, font=date_font)
 	if save_as_file:
-		certificate_file_path = frappe.get_site_path("public", "files", certificate_doc.name + "-" + student_name + ".png")
+		filename = certificate_doc.name + "-" + student_name + ".png"
+		filename = re.sub(r'[^\w_. -]', '_', filename)
+		certificate_file_path = frappe.get_site_path("public", "files", filename)
 		template.save(certificate_file_path)
-		return  f"/files/{certificate_doc.name}-{student_name}.png"
+		return  f"/files/{filename}"
 	else:
 		return pil_image_to_base64(template)
 	
