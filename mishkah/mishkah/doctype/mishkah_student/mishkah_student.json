@@ -172,8 +172,16 @@
   }
  ],
  "index_web_pages_for_search": 1,
- "links": [],
- "modified": "2024-08-19 15:48:48.693021",
+ "links": [
+  {
+   "is_child_table": 1,
+   "link_doctype": "Mishkah Student Group Student",
+   "link_fieldname": "student",
+   "parent_doctype": "Mishkah Student Group",
+   "table_fieldname": "students"
+  }
+ ],
+ "modified": "2024-10-23 11:51:46.768159",
  "modified_by": "Administrator",
  "module": "Mishkah",
  "name": "Mishkah Student",
