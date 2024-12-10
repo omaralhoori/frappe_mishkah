@@ -26,7 +26,8 @@
   "column_break_vtmv",
   "main_group",
   "group",
-  "subgroup"
+  "subgroup",
+  "batch"
  ],
  "fields": [
   {
@@ -137,11 +138,18 @@
    "fieldname": "subgroup",
    "fieldtype": "Data",
    "label": "Subgroup"
+  },
+  {
+   "default": "0",
+   "fieldname": "batch",
+   "fieldtype": "Int",
+   "hidden": 1,
+   "label": "Batch"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-10-23 10:18:22.507699",
+ "modified": "2024-10-28 00:14:22.775983",
  "modified_by": "Administrator",
  "module": "Mishkah",
  "name": "Mishkah Level Enrollment",
