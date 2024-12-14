@@ -34,34 +34,6 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Certificates",
-   "link_count": 2,
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Certificates",
-   "link_count": 0,
-   "link_to": "Mishkah Certificate",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Level Certificates",
-   "link_count": 0,
-   "link_to": "Mishkah Level Certificate",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
    "label": "Educational Roadmap",
    "link_count": 4,
    "onboard": 0,
@@ -278,9 +250,47 @@
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Certificates",
+   "link_count": 3,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Certificates",
+   "link_count": 0,
+   "link_to": "Mishkah Certificate",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Level Certificates",
+   "link_count": 0,
+   "link_to": "Mishkah Level Certificate",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Certificate Creation Tool",
+   "link_count": 0,
+   "link_to": "Mishkah Certificate Creation Tool",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2024-06-12 11:00:52.530896",
+ "modified": "2024-12-14 12:59:01.977170",
  "modified_by": "Administrator",
  "module": "Mishkah",
  "name": "Mishkah",

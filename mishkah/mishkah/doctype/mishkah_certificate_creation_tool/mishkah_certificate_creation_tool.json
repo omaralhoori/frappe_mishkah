@@ -1,0 +1,71 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-12-11 20:35:00.019034",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_r4h4",
+  "student_group",
+  "column_break_byn6",
+  "get_students",
+  "section_break_ghmv",
+  "students"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_r4h4",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "student_group",
+   "fieldtype": "Link",
+   "label": "Student Group",
+   "options": "Mishkah Student Group"
+  },
+  {
+   "fieldname": "column_break_byn6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "get_students",
+   "fieldtype": "Button",
+   "label": "Get Students"
+  },
+  {
+   "fieldname": "section_break_ghmv",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "students",
+   "fieldtype": "HTML",
+   "label": "Students"
+  }
+ ],
+ "hide_toolbar": 1,
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2024-12-13 22:47:37.308940",
+ "modified_by": "Administrator",
+ "module": "Mishkah",
+ "name": "Mishkah Certificate Creation Tool",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

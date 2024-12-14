@@ -36,3 +36,4 @@ class MishkahLevelEnrollment(Document):
 		self.db_set("certificate", file)
 		self.db_set("certificate_name", certificate_template.certificate)
 		self.db_set("certificate_type", certificate_template.certificate)
+		return self.certificate
