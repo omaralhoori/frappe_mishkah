@@ -18,7 +18,10 @@ from frappe.utils import cstr
 import json
 import re
 import random
-def create_mishkah_certificate(certificate_template, student_name, instructor_name, certificate_date):
+
+from pathlib import Path
+
+def create_mishkah_certificate(certificate_template, student_name, instructor_name, certificate_date, level):
     certificate_doc = frappe.get_doc("Mishkah Certificate", certificate_template)
     certificate_configuration = certificate_doc.certificate_configuration
     if type(certificate_configuration) == str:
@@ -53,8 +56,12 @@ def create_mishkah_certificate(certificate_template, student_name, instructor_na
     site_name = cstr(frappe.local.site)
     filename = student_name + "_"+ certificate_template + "_" + str(randint) +".pdf"
     filename = re.sub(r'[^\w_. -]', '_', filename)
-    output = site_name + '/public/files/certificates/' +  filename
-    file_name = "/files/certificates/" + filename
+    dir_name =  level + "/" +instructor_name
+    dirname = re.sub(r'[^\w_. -]', '_', dir_name)
+    output = site_name + '/public/files/student_certificate/' + dirname 
+    file_name = "/files/student_certificate/" + dirname + "/"  + filename
+    Path(output).mkdir(parents=True, exist_ok=True)
+    output = output + "/"  + filename
     create_pdf_certificate(certificate_doc.certificate_pdf, output, configuration,  frappe._dict({
             "name": student_name,
             "date": str(certificate_date),
@@ -153,6 +160,49 @@ def generate_all_enrollments_certificates(length=100, one_batch=False):
         for enrollment in enrollments:
             enrollment_doc = frappe.get_doc("Mishkah Level Enrollment", enrollment.name)
             enrollment_doc.generate_certificate()
+            enrollment_doc.save()
+            frappe.db.commit()
+        skip += length
+        if len(enrollments) < length or one_batch:
+            break
+
+def generate_level_enrollments_certificates(level, batch,  length=100, one_batch=False):
+    skip = 0
+    while True:
+        enrollments = frappe.db.sql("""
+            SELECT name from `tabMishkah Level Enrollment`
+        WHERE 
+            level=%(level)s
+            and batch={batch} and total_level_points > 0 
+            and (instructor_name is not null or instructor_name != "")
+        LIMIT {skip},{length}
+        """.format(length=length, skip=skip, batch=batch),{"level": level}, as_dict=True)
+        print(len(enrollments))
+        for enrollment in enrollments:
+            enrollment_doc = frappe.get_doc("Mishkah Level Enrollment", enrollment.name)
+            enrollment_doc.generate_certificate()
+            enrollment_doc.batch= batch + 1
+            enrollment_doc.save()
+            frappe.db.commit()
+        skip += length
+        if len(enrollments) < length or one_batch:
+            break
+
+def generate_level_enrollments_certificates_instructor_name(instructor_name, batch, length=100, one_batch=False):
+    skip = 0
+    while True:
+        enrollments = frappe.db.sql("""
+            SELECT name from `tabMishkah Level Enrollment`
+        WHERE 
+            instructor_name=%(instructor_name)s
+            and total_level_points > 0  and batch={batch}
+        LIMIT {skip},{length}
+        """.format(length=length, skip=skip, batch=batch),{"instructor_name": instructor_name}, as_dict=True)
+        print(len(enrollments))
+        for enrollment in enrollments:
+            enrollment_doc = frappe.get_doc("Mishkah Level Enrollment", enrollment.name)
+            enrollment_doc.generate_certificate()
+            enrollment_doc.batch= batch + 1
             enrollment_doc.save()
             frappe.db.commit()
         skip += length

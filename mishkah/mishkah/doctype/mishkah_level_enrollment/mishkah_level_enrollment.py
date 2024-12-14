@@ -29,7 +29,7 @@ class MishkahLevelEnrollment(Document):
 			INNER JOIN `tabMishkah Student` as tbl2 ON tbl1.student=tbl2.name
 			WHERE tbl1.name=%(enrollment)s
 			""", {"enrollment": self.program_enrollment},as_dict=True)[0]["student_name"]
-		file = create_mishkah_certificate(certificate_template.certificate, student_name, self.instructor_name or "", frappe.utils.nowdate())
+		file = create_mishkah_certificate(certificate_template.certificate, student_name, self.instructor_name or "", frappe.utils.nowdate(), self.level)
 		self.certificate = file
 		self.certificate_name = certificate_template.certificate
 		self.certificate_type = certificate_template.certificate
