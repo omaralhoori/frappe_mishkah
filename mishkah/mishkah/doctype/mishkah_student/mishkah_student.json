@@ -32,7 +32,8 @@
   "user",
   "student_name",
   "section_break_8xqv",
-  "enrollment_status"
+  "enrollment_status",
+  "student_group"
  ],
  "fields": [
   {
@@ -169,6 +170,12 @@
    "label": "Enrollment Status",
    "options": "\n\u0639\u0636\u0648\u064a\u0629 \u0641\u0639\u0627\u0644\u0629\n\u0639\u0636\u0648\u064a\u0629 \u0645\u062a\u062c\u0645\u062f\u0629\n\u0645\u0646\u0633\u062d\u0628\n\u0645\u0641\u0635\u0648\u0644",
    "reqd": 1
+  },
+  {
+   "fieldname": "student_group",
+   "fieldtype": "Link",
+   "label": "Student Group",
+   "options": "Mishkah Student Group"
   }
  ],
  "index_web_pages_for_search": 1,
@@ -181,7 +188,7 @@
    "table_fieldname": "students"
   }
  ],
- "modified": "2024-10-23 11:51:46.768159",
+ "modified": "2024-12-15 10:36:47.528486",
  "modified_by": "Administrator",
  "module": "Mishkah",
  "name": "Mishkah Student",

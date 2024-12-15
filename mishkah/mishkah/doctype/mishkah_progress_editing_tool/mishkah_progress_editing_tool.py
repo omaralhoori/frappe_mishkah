@@ -30,6 +30,7 @@ def get_courses_per_stage(level_stage, groups):
 		INNER JOIN `tabMishkah Learning Path` as tbl2 ON tbl1.parent=tbl2.name
 		INNER JOIN `tabMishkah Course` as tbl3 ON tbl1.course=tbl3.name
 		WHERE tbl2.level=%(level)s AND tbl1.stage=%(stage)s
+		ORDER BY tbl1.idx
 	""", {"level": level, "stage": level_stage}, as_dict=True)
 
 
