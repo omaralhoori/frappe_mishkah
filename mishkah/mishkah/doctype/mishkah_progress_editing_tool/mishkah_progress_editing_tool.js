@@ -193,8 +193,26 @@ frappe.update_enrollment_stage_total = (enrollment) => {
 	var total = 0;
 	for (var input of inputs){
 		total += Number(input.value)
+		frappe.set_input_color(input)
+		
 	}
 	document.querySelector(`tr[enrollment-id="${enrollment}"] .total-points`).innerHTML = Number(total).toFixed(1);
+	frappe.set_total_color(total, enrollment)
+}
+
+frappe.set_input_color = (input) =>{
+	if (input.value == 0 ){
+		input.style = "background: red";
+	}else{
+		input.style = "background: inherit";
+	}
+}
+frappe.set_total_color = (total, enrollment) =>{
+	if (input.value == 0 ){
+		document.querySelector(`tr[enrollment-id="${enrollment}"] .first-col`).style = "background-color: red;"
+	}else{
+		document.querySelector(`tr[enrollment-id="${enrollment}"] .first-col`).style = "background-color: inherit;"
+	}
 }
 frappe.update_course_complete_total = (courseId) => {
 	var inputs = document.querySelectorAll(`input[course="${courseId}"]`)
