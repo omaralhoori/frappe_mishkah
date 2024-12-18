@@ -10,7 +10,23 @@ class MishkahStudentGroup(Document):
 			if s.student == student:
 				self.students.remove(s)
 				return True
-			
+	@frappe.whitelist()
+	def move_students(self, students, student_group):
+		frappe.only_for("System Manager")
+		student_group_doc = frappe.get_doc("Mishkah Student Group", student_group)
+		if student_group_doc.group_type != "Student Subgroup":
+			frappe.throw("Please select a student subgroup")
+		if student_group == self.name:
+			frappe.throw("Please Select different group")
+		for student in students:
+			student_name = frappe.db.get_value("Mishkah Student Group Student", student, "student")
+			self.remove_student(student_name)
+			student_row = student_group_doc.append("students")
+			student_row.student=student_name
+			student_row.is_active = 1
+			frappe.db.set_value("Mishkah Student", student_name, "student_group", student_group)
+			student_group_doc.save()
+		self.save()
 	def validate(self):
 		self.validate_group_order()
 		self.set_group_permissions()

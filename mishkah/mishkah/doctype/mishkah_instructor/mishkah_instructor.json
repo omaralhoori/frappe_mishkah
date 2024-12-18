@@ -33,7 +33,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-06-02 15:20:19.591473",
+ "modified": "2024-12-19 01:17:23.062051",
  "modified_by": "Administrator",
  "module": "Mishkah",
  "name": "Mishkah Instructor",
@@ -72,6 +72,7 @@
   }
  ],
  "search_fields": "instructor_name, user",
+ "show_title_field_in_link": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
