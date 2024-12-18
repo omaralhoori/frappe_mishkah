@@ -24,6 +24,10 @@
     max-width: 100px;
     left: 0px;
   }
+  html[dir="rtl"] .first-col {
+    left: auto;
+    right: 0;
+  }
   .first-row {
     /* height: 100px; */
     min-height: 100px;

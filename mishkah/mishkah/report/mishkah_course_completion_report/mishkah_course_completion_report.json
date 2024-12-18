@@ -1,0 +1,34 @@
+{
+ "add_total_row": 0,
+ "columns": [],
+ "creation": "2024-12-18 15:45:10.022369",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "modified": "2024-12-18 15:45:36.538599",
+ "modified_by": "Administrator",
+ "module": "Mishkah",
+ "name": "Mishkah Course Completion Report",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "ref_doctype": "Mishkah Student Group",
+ "report_name": "Mishkah Course Completion Report",
+ "report_type": "Script Report",
+ "roles": [
+  {
+   "role": "Mishkah Data Entry Specialist"
+  },
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Mishkah Data Manager"
+  },
+  {
+   "role": "Mishkah Instructor"
+  }
+ ]
+}

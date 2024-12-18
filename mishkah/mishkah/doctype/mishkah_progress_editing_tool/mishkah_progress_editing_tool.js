@@ -34,6 +34,16 @@ frappe.ui.form.on("Mishkah Progress Editing Tool", {
 			</table>
 			</div>
 			`)
+		var enrollments = document.querySelectorAll(".enrollment-row")
+		for (var enrollment of enrollments){
+			var enrollmentId = enrollment.getAttribute("enrollment-id")
+			frappe.update_enrollment_stage_total(enrollmentId)
+		}
+		var courses = document.querySelectorAll(".course-point-input")
+		for (var course of courses){
+			var courseId = course.getAttribute("course")
+			frappe.update_course_complete_total(courseId)
+		}
 	},
 	render_error_message(frm){
 		$(frm.fields_dict['students'].wrapper)
@@ -43,14 +53,15 @@ frappe.ui.form.on("Mishkah Progress Editing Tool", {
 	},
     render_excel_table_header(frm, courses){
         var columns= '';
-        for (var course of courses){
+		for (var course of courses){
             columns += `<th course-id="${course.course}" class="first-row sticky-col" course-points="${course.course_points}" >${course.course_name} <small>(${course.course_points})</small></th>`
-        }
+		}
         var html = `
             <thead> 
             <tr>
 				<th>Student Name</th>
                 ${columns}
+				<th>Total</th>
             </tr>
             </thead>
         `;
@@ -103,20 +114,30 @@ frappe.ui.form.on("Mishkah Progress Editing Tool", {
                 
             }
 			
-            html += ` <tr>
+            html += ` <tr class="enrollment-row" enrollment-id="${levelEnrollment}">
 				<td style="min-width:150px;" class="first-col sticky-col" student-id="${studentId}">${studentName}</td>
                 ${columns}
+				<td class="total-points">0</td>
             </tr>
             `
         }
-
+		var courseTotal = '';
+		for (var course of courses){
+			courseTotal += `<td course-id="${course.course}" class="course-total">0</td>`
+		}
+		html += `
+			<tr>
+				<td>Total</td>
+				${courseTotal}
+			</tr>
+		`
         return `<tbody>${html}</tbody>`
     },
 });
 
 frappe.render_mark_input = (studentPoints, courseId, coursPoints, progressName) => {
 	return `<input type="number" 
-	step=".01" class="form-control" 
+	step=".01" class="form-control course-point-input" 
 	 value="${studentPoints}" 
 	 course="${courseId}"
 	  min="0"  max="${coursPoints}" 
@@ -133,6 +154,13 @@ frappe.coursePointChanged = (e) => {
 	var courseId = parentNode.getAttribute('course')
 	var progressName = e.getAttribute('progress-name')
 	var points = e.value
+	if (Number(maxPoints) < Number(points)){
+		points = maxPoints
+		e.value = maxPoints
+	}else if (Number(points) < 0){
+		points = 0;
+		e.value = 0
+	}
 	if (Number(maxPoints) >= Number(points) && Number(points) >= 0){
 		if (progressName){
 			frappe.call({
@@ -154,8 +182,31 @@ frappe.coursePointChanged = (e) => {
 				}
 			})
 		}
+		
 	}
-	
+	frappe.update_enrollment_stage_total(enrollment)
+	frappe.update_course_complete_total(courseId)
+}
+
+frappe.update_enrollment_stage_total = (enrollment) => {
+	var inputs = document.querySelectorAll(`tr[enrollment-id="${enrollment}"] .course-point-input`)
+	var total = 0;
+	for (var input of inputs){
+		total += Number(input.value)
+	}
+	document.querySelector(`tr[enrollment-id="${enrollment}"] .total-points`).innerHTML = Number(total).toFixed(1);
+}
+frappe.update_course_complete_total = (courseId) => {
+	var inputs = document.querySelectorAll(`input[course="${courseId}"]`)
+	var total = 0;
+	for (var input of inputs){
+		var courseMax = input.getAttribute("max-points")
+		var points = input.value
+		if (Number(points) == Number(courseMax)){
+			total += 1;
+		}
+	}
+	document.querySelector(`.course-total[course-id="${courseId}"]`).innerHTML = Number(total).toFixed(1);
 }
 frappe.setCourseMark = (e, markPercentage) => {
 	var parentNode = e.parentNode
@@ -181,6 +232,8 @@ frappe.setCourseMark = (e, markPercentage) => {
 					parentNode.innerHTML = res.message.message
 				}else{
 					parentNode.innerHTML = frappe.render_mark_input(res.message.points, courseId, maxPoints, res.message.progress_name)
+					frappe.update_enrollment_stage_total(enrollment)
+					frappe.update_course_complete_total(courseId)
 				}
 				
 			}

@@ -1,6 +1,6 @@
 {
  "charts": [],
- "content": "[{\"id\":\"yRa-YNH5Fu\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Mishkah</span>\",\"col\":12}},{\"id\":\"FPccIUdB9I\",\"type\":\"card\",\"data\":{\"card_name\":\"Student and Instructor\",\"col\":4}},{\"id\":\"jYjh0bMERw\",\"type\":\"card\",\"data\":{\"card_name\":\"Content\",\"col\":4}},{\"id\":\"fh_0c0Z8vA\",\"type\":\"card\",\"data\":{\"card_name\":\"Educational Roadmap\",\"col\":4}},{\"id\":\"JtcaqiCCJb\",\"type\":\"card\",\"data\":{\"card_name\":\"Progression\",\"col\":4}},{\"id\":\"SkxruE2Qnl\",\"type\":\"card\",\"data\":{\"card_name\":\"Web Requests\",\"col\":4}},{\"id\":\"Ko_OxpLjCY\",\"type\":\"card\",\"data\":{\"card_name\":\"Settings\",\"col\":4}},{\"id\":\"tzYxCzGDEF\",\"type\":\"card\",\"data\":{\"card_name\":\"Certificates\",\"col\":4}}]",
+ "content": "[{\"id\":\"yRa-YNH5Fu\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Mishkah</span>\",\"col\":12}},{\"id\":\"FPccIUdB9I\",\"type\":\"card\",\"data\":{\"card_name\":\"Student and Instructor\",\"col\":4}},{\"id\":\"jYjh0bMERw\",\"type\":\"card\",\"data\":{\"card_name\":\"Content\",\"col\":4}},{\"id\":\"fh_0c0Z8vA\",\"type\":\"card\",\"data\":{\"card_name\":\"Educational Roadmap\",\"col\":4}},{\"id\":\"JtcaqiCCJb\",\"type\":\"card\",\"data\":{\"card_name\":\"Progression\",\"col\":4}},{\"id\":\"SkxruE2Qnl\",\"type\":\"card\",\"data\":{\"card_name\":\"Web Requests\",\"col\":4}},{\"id\":\"Ko_OxpLjCY\",\"type\":\"card\",\"data\":{\"card_name\":\"Settings\",\"col\":4}},{\"id\":\"tzYxCzGDEF\",\"type\":\"card\",\"data\":{\"card_name\":\"Certificates\",\"col\":4}},{\"id\":\"Qz4z_mQNhM\",\"type\":\"card\",\"data\":{\"card_name\":\"Reports\",\"col\":4}}]",
  "creation": "2023-12-10 02:56:10.133133",
  "docstatus": 0,
  "doctype": "Workspace",
@@ -288,9 +288,27 @@
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Reports",
+   "link_count": 1,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Course Completion Report",
+   "link_count": 0,
+   "link_to": "Mishkah Course Completion Report",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2024-12-14 12:59:01.977170",
+ "modified": "2024-12-18 16:08:24.881378",
  "modified_by": "Administrator",
  "module": "Mishkah",
  "name": "Mishkah",
