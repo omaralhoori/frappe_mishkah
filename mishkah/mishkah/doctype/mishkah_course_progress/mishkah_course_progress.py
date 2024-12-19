@@ -11,8 +11,15 @@ class MishkahCourseProgress(Document):
 			FROM `tabMishkah Course Progress`
 			WHERE level_enrollment=%(level_enrollment)s
 		""", {"level_enrollment": self.level_enrollment}, as_dict=True)
+		basic_total = frappe.db.sql("""
+			SELECT SUM(points) as total
+			FROM `tabMishkah Course Progress` as tbl1
+			INNER JOIN `tabMishkah Course` as tbl2 on tbl1.course=tbl2.name
+			WHERE tbl1.level_enrollment=%(level_enrollment)s and tbl2.basic_course=1
+		""", {"level_enrollment": self.level_enrollment}, as_dict=True)
 		total_points = total[0]['total']
-		frappe.db.set_value("Mishkah Level Enrollment", self.level_enrollment, {"total_level_points": total_points})
+		basic_total_points = basic_total[0]['total']
+		frappe.db.set_value("Mishkah Level Enrollment", self.level_enrollment, {"total_level_points": total_points, "basic_total_level_points": basic_total_points})
 		
 
 def update_level_enrollment_points(level_enrollment=None, level=None):

@@ -14,6 +14,7 @@
   "enrollment_date",
   "educational_term",
   "section_break_2pvd",
+  "basic_total_level_points",
   "total_level_points",
   "column_break_pysw",
   "enrollment_status",
@@ -145,11 +146,17 @@
    "fieldtype": "Int",
    "hidden": 1,
    "label": "Batch"
+  },
+  {
+   "default": "0",
+   "fieldname": "basic_total_level_points",
+   "fieldtype": "Float",
+   "label": "Basic Total Level Points"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-10-28 00:14:22.775983",
+ "modified": "2024-12-19 10:14:48.317692",
  "modified_by": "Administrator",
  "module": "Mishkah",
  "name": "Mishkah Level Enrollment",

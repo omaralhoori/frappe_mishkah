@@ -16,7 +16,7 @@ def get_students(student_group):
 	"""
 
 	students = frappe.db.sql("""
-		SELECT tbl2.student_name, tbl4.total_level_points, 
+		SELECT tbl2.student_name, tbl4.total_level_points, tbl4.basic_total_level_points,
 			   tbl4.certificate_name, tbl4.certificate,
 			   tbl6.instructor_name, tbl4.name as level_enrollment, tbl2.name as student
 		FROM 

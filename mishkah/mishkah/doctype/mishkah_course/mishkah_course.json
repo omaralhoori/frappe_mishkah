@@ -10,6 +10,7 @@
  "field_order": [
   "course_code",
   "course_name",
+  "basic_course",
   "material_type",
   "material_resource",
   "course_points"
@@ -49,11 +50,17 @@
    "in_list_view": 1,
    "label": "Course Points",
    "reqd": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "basic_course",
+   "fieldtype": "Check",
+   "label": "Basic Course"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-04-26 02:44:05.227371",
+ "modified": "2024-12-19 10:13:35.840852",
  "modified_by": "Administrator",
  "module": "Mishkah",
  "name": "Mishkah Course",

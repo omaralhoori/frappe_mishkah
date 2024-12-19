@@ -208,10 +208,10 @@ frappe.set_input_color = (input) =>{
 	}
 }
 frappe.set_total_color = (total, enrollment) =>{
-	if (input.value == 0 ){
+	if (total == 0 ){
 		document.querySelector(`tr[enrollment-id="${enrollment}"] .first-col`).style = "background-color: red;"
 	}else{
-		document.querySelector(`tr[enrollment-id="${enrollment}"] .first-col`).style = "background-color: inherit;"
+		//document.querySelector(`tr[enrollment-id="${enrollment}"] .first-col`).style = "background-color: unset;"
 	}
 }
 frappe.update_course_complete_total = (courseId) => {

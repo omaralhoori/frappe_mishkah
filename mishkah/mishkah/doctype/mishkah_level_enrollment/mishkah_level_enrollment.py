@@ -10,17 +10,18 @@ class MishkahLevelEnrollment(Document):
 	def generate_certificate(self):
 		certificate_template = None
 		certificates = frappe.db.sql("""
-			SELECT min_points, certificate
+			SELECT min_points, certificate, min_basic_points
 				FROM `tabMishkah Level Certificate Item` tbl1
 				INNER JOIN `tabMishkah Level Certificate` tbl2 ON tbl1.parent=tbl2.name
 			WHERE tbl2.level=%(level)s
 			ORDER BY min_points desc
 		""", {"level": self.level}, as_dict=True)
 		for certificate in certificates:
-			if self.total_level_points >= certificate['min_points']:
+			if self.total_level_points >= certificate['min_points'] and self.basic_total_level_points >= certificate['min_basic_points']:
 				certificate_template = certificate
 				break
 		if not certificate_template:
+			frappe.throw("Cannot find certificate")
 			return
 		
 		student_name = frappe.db.sql("""
