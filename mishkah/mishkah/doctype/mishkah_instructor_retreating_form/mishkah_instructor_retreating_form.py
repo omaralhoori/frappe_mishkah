@@ -16,5 +16,6 @@ class MishkahInstructorRetreatingForm(Document):
 				inst_row = student_group_doc.append("instructors")
 				inst_row.instructor = self.substitute_instructor
 				student_group_doc.save()
+				student_group_doc.set_group_permissions()
 		if not found:
 			frappe.throw("Cannot find instructor in the selected group")

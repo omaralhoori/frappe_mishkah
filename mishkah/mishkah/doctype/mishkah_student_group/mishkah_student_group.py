@@ -29,7 +29,20 @@ class MishkahStudentGroup(Document):
 		self.save()
 	def validate(self):
 		self.validate_group_order()
-		self.set_group_permissions()
+		self.validate_student_group()
+		#self.set_group_permissions()
+	def validate_student_group(self):
+		old_doc = self.get_doc_before_save()
+		if len(self.students) != len(old_doc.students):
+			return self.set_student_group()
+		for s1, s2 in zip(self.students, old_doc.students):
+			if s1.student != s2.student:
+
+				return self.set_student_group()
+		
+	def set_student_group(self):
+		update_student_group_in_student(self.name)
+		
 	def validate_group_order(self):
 		if self.parent_mishkah_student_group:
 			parent_group_type = frappe.db.get_value("Mishkah Student Group", self.parent_mishkah_student_group, "group_type")
@@ -77,9 +90,13 @@ class MishkahStudentGroup(Document):
 				}).insert(ignore_permissions=True)
 
 
-def update_student_group_in_student():
+def update_student_group_in_student(student_group=None):
+	where_stmt = ""
+	if student_group:
+		where_stmt = f"WHERE grp.parent='{student_group}'"
 	frappe.db.sql("""
 		UPDATE `tabMishkah Student` as std
 			   INNER JOIN `tabMishkah Student Group Student` as grp ON std.name=grp.student
 			SET std.student_group=grp.parent
-""")
+		{where_stmt}
+""".format(where_stmt=where_stmt))
