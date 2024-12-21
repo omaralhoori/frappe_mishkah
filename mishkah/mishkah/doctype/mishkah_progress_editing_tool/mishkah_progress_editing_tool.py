@@ -4,6 +4,7 @@
 import frappe
 from frappe.model.document import Document
 import time
+import json 
 
 class MishkahProgressEditingTool(Document):
 	pass
@@ -87,16 +88,14 @@ def check_group_order(current_level, child_level):
 
 @frappe.whitelist()
 def set_student_mark(enrollment, points, course, group, student, progress_name=None):
-	print("99999999999999999999999999999")
-	print(group, student)
-	start = time.time()
+	# start = time.time()
 	
 	if progress_name:
 		progress = frappe.get_doc("Mishkah Course Progress",progress_name)
 		progress.points = points
 		progress.save(ignore_permissions=True)
-		end = time.time()
-		print("time1:", end - start)
+		# end = time.time()
+		# print("time1:", end - start)
 		return {
 			"is_success": 1,
 			"points": points,
@@ -116,10 +115,50 @@ def set_student_mark(enrollment, points, course, group, student, progress_name=N
 		"student": student
 	})
 	progress.insert(ignore_permissions=True)
-	end = time.time()
-	print("time2:", end - start)
+	# end = time.time()
+	# print("time2:", end - start)
 	return {
 		"is_success": 1,
 		"points": points,
 		"progress_name": progress.name
 	}
+
+import random
+import string
+
+@frappe.whitelist()
+def save_progress(results, enrollments):
+	if type(results) == str:
+		results = json.loads(results)
+	for res in results:
+		if not res.get("name") or res.get("name") == "":
+			res['name'] =  ''.join(random.choices(string.ascii_letters + string.digits, k=10))
+		res['creation'] = frappe.utils.now()
+		res['modified'] = frappe.utils.now()
+		res['modified_by'] = frappe.session.user
+		res['owner'] = frappe.session.user
+		frappe.db.sql("""
+			INSERT INTO `tabMishkah Course Progress` (name, creation, modified, modified_by, owner, student, level_enrollment, course, points, student_group)
+				VALUES (%(name)s, %(creation)s, %(modified)s, %(modified_by)s, %(owner)s, %(student)s, %(level_enrollment)s, %(course)s, {points}, %(student_group)s)
+			ON DUPLICATE KEY UPDATE
+				points={points}, 
+				modified=%(modified)s,
+				modified_by=%(modified_by)s;
+		""".format(points=float(res['points'])), res)
+	if type(enrollments) == str:
+		enrollments = json.loads(enrollments)
+	for enrollment in enrollments:
+		total = frappe.db.sql("""
+			SELECT SUM(points) as total
+			FROM `tabMishkah Course Progress`
+			WHERE level_enrollment=%(level_enrollment)s
+		""", {"level_enrollment": enrollment}, as_dict=True)
+		basic_total = frappe.db.sql("""
+			SELECT SUM(points) as total
+			FROM `tabMishkah Course Progress` as tbl1
+			INNER JOIN `tabMishkah Course` as tbl2 on tbl1.course=tbl2.name
+			WHERE tbl1.level_enrollment=%(level_enrollment)s and tbl2.basic_course=1
+		""", {"level_enrollment": enrollment}, as_dict=True)
+		total_points = total[0]['total']
+		basic_total_points = basic_total[0]['total']
+		frappe.db.set_value("Mishkah Level Enrollment", enrollment, {"total_level_points": total_points, "basic_total_level_points": basic_total_points})

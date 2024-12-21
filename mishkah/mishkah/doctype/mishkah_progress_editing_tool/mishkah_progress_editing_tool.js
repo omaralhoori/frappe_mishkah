@@ -4,7 +4,56 @@
 frappe.ui.form.on("Mishkah Progress Editing Tool", {
 	refresh(frm) {
         frm.disable_save()
+		frm.add_custom_button('Save', function() {
+            frm.events.save_progress(frm);
+        },);
+		frm.events.generate_save_uid(frm)
+	},
+	save_progress(frm){
+		$(`button[data-label='Save'].btn-default`).prop("disabled", true)
 
+		var results = [];
+		var enrollments = [];
+		var inputs = document.querySelectorAll(".course-point-input")
+		var save_uuid = $(`button[data-label='Save'].btn-default`).attr("uuid")
+		for (var input of inputs){
+			if (input.getAttribute("uuid") == save_uuid){
+				results.push({
+					"points": input.value,
+					"name": input.getAttribute("progress-name"),
+					"course": input.getAttribute("course"),
+					"level_enrollment": input.getAttribute("enrollment-id"),
+					"student_group": input.getAttribute("group-id"),
+					"student": input.parentNode.getAttribute("student-id")
+				})
+			}
+			if (!enrollments.includes(input.getAttribute("enrollment-id"))){
+				enrollments.push(input.getAttribute("enrollment-id"))
+			}
+		}
+		frappe.call({
+			"method": "mishkah.mishkah.doctype.mishkah_progress_editing_tool.mishkah_progress_editing_tool.save_progress",
+			"args": {
+				"results": results,
+				"enrollments": enrollments
+			},
+			callback: res =>{
+				frm.events.generate_save_uid(frm)
+				$(`button[data-label='Save'].btn-default`).prop("disabled", false)
+				frappe.msgprint("Progress saved successfully")
+				window.location.reload();
+			}
+		})
+		
+	},
+	
+	generate_save_uid(frm){
+		var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+			const r = Math.random() * 16 | 0, 
+				v = c == 'x' ? r : (r & 0x3 | 0x8);
+			return v.toString(16);
+		});
+		$(`button[data-label='Save'].btn-default`).attr("uuid", uuid)
 	},
 	get_students(frm){
 		frappe.call({
@@ -102,7 +151,7 @@ frappe.ui.form.on("Mishkah Progress Editing Tool", {
 					var studentPoints = parseFloat(student_points[courseIndex]).toFixed(1)
 					var progressName = student_progresses[courseIndex]
 					columns += `<td style="min-width:150px;" class="${secondClass}" group-id="${groupId}" student-id="${studentId}" enrollment-id="${levelEnrollment}" course="${course['course']}" max-points=${course['course_points']}>
-					${frappe.render_mark_input(studentPoints, course['course'], course['course_points'], progressName)}
+					${frappe.render_mark_input(levelEnrollment,groupId, studentPoints, course['course'], course['course_points'], progressName)}
 					</td>`
 				}else{
 					columns += `<td style="min-width:200px;" class="${secondClass}" group-id="${groupId}" student-id="${studentId}" enrollment-id="${levelEnrollment}" course="${course['course']}" max-points=${course['course_points']}>
@@ -135,11 +184,13 @@ frappe.ui.form.on("Mishkah Progress Editing Tool", {
     },
 });
 
-frappe.render_mark_input = (studentPoints, courseId, coursPoints, progressName) => {
+frappe.render_mark_input = (enrollmentId,groupId, studentPoints, courseId, coursPoints, progressName) => {
 	return `<input type="number" 
 	step=".01" class="form-control course-point-input" 
 	 value="${studentPoints}" 
 	 course="${courseId}"
+	 group-id="${groupId}"
+	 enrollment-id="${enrollmentId}"
 	  min="0"  max="${coursPoints}" 
 	  progress-name="${progressName}"
 	  max-points=${coursPoints} 
@@ -162,26 +213,27 @@ frappe.coursePointChanged = (e) => {
 		e.value = 0
 	}
 	if (Number(maxPoints) >= Number(points) && Number(points) >= 0){
-		if (progressName){
-			frappe.call({
-				"method": "mishkah.mishkah.doctype.mishkah_progress_editing_tool.mishkah_progress_editing_tool.set_student_mark",
-				args: {
-					"enrollment": enrollment,
-					"points": points,
-					"course": courseId,
-					"progress_name": progressName,
-					"group": group,
-					"student": student
-				},
-				callback: res => {
-					if (! res.message.is_success){
-						parentNode.innerHTML = res.message.message
-					}else{
-						parentNode.innerHTML = frappe.render_mark_input(res.message.points, courseId, maxPoints, res.message.progress_name)
-					}
-				}
-			})
-		}
+		// if (progressName){
+		// 	frappe.call({
+		// 		"method": "mishkah.mishkah.doctype.mishkah_progress_editing_tool.mishkah_progress_editing_tool.set_student_mark",
+		// 		args: {
+		// 			"enrollment": enrollment,
+		// 			"points": points,
+		// 			"course": courseId,
+		// 			"progress_name": progressName,
+		// 			"group": group,
+		// 			"student": student
+		// 		},
+		// 		callback: res => {
+		// 			if (! res.message.is_success){
+		// 				parentNode.innerHTML = res.message.message
+		// 			}else{
+		// 				parentNode.innerHTML = frappe.render_mark_input(enrollment, group,res.message.points, courseId, maxPoints, res.message.progress_name)
+		// 			}
+		// 		}
+		// 	})
+		// }
+		frappe.update_input_uuid( e);
 		
 	}
 	frappe.update_enrollment_stage_total(enrollment)
@@ -236,26 +288,37 @@ frappe.setCourseMark = (e, markPercentage) => {
 	var points = Number(maxPoints) * markPercentage / 100
 	if (enrollment && maxPoints && courseId){
 		parentNode.innerHTML = ''
-		frappe.call({
-			"method": "mishkah.mishkah.doctype.mishkah_progress_editing_tool.mishkah_progress_editing_tool.set_student_mark",
-			args: {
-				"enrollment": enrollment,
-				"points": points,
-				"course": courseId,
-				"group": group,
-				"student": student
-			},
-			callback: res => {
-				if (! res.message.is_success){
-					parentNode.innerHTML = res.message.message
-				}else{
-					parentNode.innerHTML = frappe.render_mark_input(res.message.points, courseId, maxPoints, res.message.progress_name)
-					frappe.update_enrollment_stage_total(enrollment)
-					frappe.update_course_complete_total(courseId)
-				}
+		// frappe.call({
+		// 	"method": "mishkah.mishkah.doctype.mishkah_progress_editing_tool.mishkah_progress_editing_tool.set_student_mark",
+		// 	args: {
+		// 		"enrollment": enrollment,
+		// 		"points": points,
+		// 		"course": courseId,
+		// 		"group": group,
+		// 		"student": student
+		// 	},
+		// 	callback: res => {
+		// 		if (! res.message.is_success){
+		// 			parentNode.innerHTML = res.message.message
+		// 		}else{
+		// 			//parentNode.innerHTML = frappe.render_mark_input(enrollment, group,res.message.points, courseId, maxPoints, res.message.progress_name)
+		// 			parentNode.innerHTML = frappe.render_mark_input(enrollment, group,points, courseId, maxPoints, "")
+		// 			frappe.update_enrollment_stage_total(enrollment)
+		// 			frappe.update_course_complete_total(courseId)
+		// 			frappe.update_input_uuid(parentNode.querySelector("input"))
+		// 		}
 				
-			}
-		})
+		// 	}
+		// })
+		parentNode.innerHTML = frappe.render_mark_input(enrollment, group,points, courseId, maxPoints, "")
+		frappe.update_enrollment_stage_total(enrollment)
+		frappe.update_course_complete_total(courseId)
+		frappe.update_input_uuid(parentNode.querySelector("input"))
 	}
 	
+}
+
+frappe.update_input_uuid = (input) => {
+	var saveUUID = $(`button[data-label='Save'].btn-default`).attr("uuid");
+	input.setAttribute("uuid", saveUUID);
 }
