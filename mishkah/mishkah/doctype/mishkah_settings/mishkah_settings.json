@@ -12,8 +12,10 @@
   "default_joining_level",
   "column_break_90u8",
   "auto_approve_new_requests",
+  "validate_student_group_change",
   "section_break_zg6c",
-  "current_educational_term"
+  "current_educational_term",
+  "current_level_completion_educational_term"
  ],
  "fields": [
   {
@@ -57,13 +59,26 @@
    "fieldname": "auto_approve_new_requests",
    "fieldtype": "Check",
    "label": "Auto Approve New Requests"
+  },
+  {
+   "fieldname": "current_level_completion_educational_term",
+   "fieldtype": "Link",
+   "label": "Current Level Completion Educational Term",
+   "options": "Mishkah Educational Term",
+   "reqd": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "validate_student_group_change",
+   "fieldtype": "Check",
+   "label": "Validate Student Group Change"
   }
  ],
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-05-25 10:12:32.304856",
+ "modified": "2024-12-22 16:22:25.213274",
  "modified_by": "Administrator",
  "module": "Mishkah",
  "name": "Mishkah Settings",

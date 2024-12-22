@@ -4,6 +4,11 @@
 frappe.ui.form.on("Mishkah Level Complete Tool", {
 	refresh(frm) {
         frm.disable_save();
+        frm.add_custom_button("Restart", ( ) => {
+            frappe.call({
+                method: "mishkah.mishkah.doctype.mishkah_level_complete_tool.mishkah_level_complete_tool.restart_form"
+            })
+        })
 	},
 
     get_students(frm) {
@@ -40,10 +45,12 @@ frappe.ui.form.on("Mishkah Level Complete Tool", {
             // instructors.push(row.instructor);
         }
         frappe.call({
-            method: "mishkah.mishkah.doctype.mishkah_level_complete_tool.mishkah_level_complete_tool.create_level_progress",
+            method: "mishkah.mishkah.doctype.mishkah_level_complete_tool.mishkah_level_complete_tool.create_level_progress_enqueue",
             args: {
                 "level": frm.doc.level,
                 "enrollments": enrollments,
+                "old_group_names": frm.doc.group_old_names,
+                "new_group_names": frm.doc.group_new_names
             },
             callback: function(r) {
                 frm.reload_doc();

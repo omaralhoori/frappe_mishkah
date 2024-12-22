@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "LENRL-.YY.-.#####",
+ "autoname": "hash",
  "creation": "2023-12-10 03:13:41.541016",
  "default_view": "List",
  "doctype": "DocType",
@@ -151,16 +151,16 @@
    "default": "0",
    "fieldname": "basic_total_level_points",
    "fieldtype": "Float",
-   "label": "Basic Total Level Points"
+   "label": "Base Total Level Points"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-19 10:14:48.317692",
+ "modified": "2024-12-22 14:09:11.993388",
  "modified_by": "Administrator",
  "module": "Mishkah",
  "name": "Mishkah Level Enrollment",
- "naming_rule": "Expression (old style)",
+ "naming_rule": "Random",
  "owner": "Administrator",
  "permissions": [
   {

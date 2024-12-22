@@ -32,6 +32,8 @@ class MishkahStudentGroup(Document):
 		self.validate_student_group()
 		#self.set_group_permissions()
 	def validate_student_group(self):
+		if not frappe.db.get_single_value("Mishkah Settings","validate_student_group_change"):
+			return
 		old_doc = self.get_doc_before_save()
 		if len(self.students) != len(old_doc.students):
 			return self.set_student_group()

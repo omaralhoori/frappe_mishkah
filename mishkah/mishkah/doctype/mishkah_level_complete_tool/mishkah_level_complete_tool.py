@@ -5,29 +5,37 @@ from mishkah.mishkah.doctype.mishkah_certificate.mishkah_certificate import gene
 import frappe
 from frappe.model.document import Document
 import json
+import random, string
 class MishkahLevelCompleteTool(Document):
 	pass
 
 
 @frappe.whitelist()
 def get_students(level):
+	current_term = frappe.db.get_single_value("Mishkah Settings", "current_level_completion_educational_term")
 	students = frappe.db.sql("""
 			SELECT tbl1.name as enrollment, tbl1.total_level_points as points, tbl2.student, tbl1.instructor_name
 			FROM `tabMishkah Level Enrollment` tbl1
 			INNER JOIN `tabMishkah Program Enrollment` tbl2 ON tbl1.program_enrollment = tbl2.name
-			WHERE tbl1.level = %(level)s AND tbl1.enrollment_status='Ongoing'
-			LIMIT 100
-						  """, {"level": level}, as_dict=True)
+			WHERE tbl1.level = %(level)s AND tbl1.enrollment_status='Ongoing' and tbl1.educational_term=%(educational_term)s
+			LIMIT 500
+						  """, {"level": level, "educational_term": current_term}, as_dict=True)
 	return students
 
 
 @frappe.whitelist()
-def create_level_progress_enqueue(level, enrollments):
+def restart_form():
+	frappe.db.set_single_value("Mishkah Level Complete Tool", "status", "Pending")
+	frappe.db.commit()
+	
+@frappe.whitelist()
+def create_level_progress_enqueue(level, enrollments, old_group_names=None, new_group_names=None):
 	if frappe.db.get_single_value("Mishkah Level Complete Tool", "status") == "In Progress": 
 		return
+	#frappe.db.set_single_value("Mishkah Level Complete Tool", "status", "Pending")
 	frappe.db.set_single_value("Mishkah Level Complete Tool", "status", "In Progress")
 	frappe.enqueue(
-		"create_level_progress", # python function or a module path as string
+		"mishkah.mishkah.doctype.mishkah_level_complete_tool.mishkah_level_complete_tool.create_level_progress", # python function or a module path as string
 		queue="long", # one of short, default, long
 		timeout=None, # pass timeout manually
 		is_async=True, # if this is True, method is run in worker
@@ -36,14 +44,46 @@ def create_level_progress_enqueue(level, enrollments):
 		enqueue_after_commit=False, # enqueue the job after the database commit is done at the end of the request
 		at_front=True, # put the job at the front of the queue
 		level=level,
-		 enrollments=enrollments # kwargs are passed to the method as arguments
+		 enrollments=enrollments,
+		  old_group_names=old_group_names,
+		   new_group_names=new_group_names # kwargs are passed to the method as arguments
 	)
 @frappe.whitelist()
-def create_level_progress(level, enrollments):
+def create_level_progress(level, enrollments, old_group_names=None, new_group_names=None):
+	
+	# make enrollments completion process
+	results = make_enrollment_completion(level,enrollments)
+
+	# make groups completion process
+	if results.get("next_level"):
+		make_group_progress(level,results.get("next_level"), old_group_names, new_group_names)
+	
+	
+		
+	
+	frappe.db.set_single_value("Mishkah Level Complete Tool", "status", "Pending")
+	
+def make_group_progress(level, next_level, old_group_names=None, new_group_names=None):
+	groups = frappe.db.get_all("Mishkah Student Group", {"level": level}, ["name"])
+	names, new_names = [], []
+	if old_group_names and new_group_names:
+		names = old_group_names.split("\n")
+		new_names = new_group_names.split("\n")
+		if len(names) != len(new_names):
+			frappe.throw("Group names are not equal")
+	for group in groups:
+		group_doc = frappe.get_doc("Mishkah Student Group", group.name)
+		group_doc.level = next_level
+		for old_name,new_name in zip(names, new_names):
+			group_doc.student_group_name = group_doc.student_group_name.replace(old_name, new_name)
+		group_doc.save(ignore_permissions=True)
+
+def make_enrollment_completion(level,enrollments):
 	if type(enrollments) == str:
 		level_enrollments = json.loads(enrollments)
 	else:
 		level_enrollments = enrollments
+
 	completion_settings = frappe.get_single('Mishkah Level Completion')
 	level_min_points = None
 	next_level = None
@@ -52,29 +92,27 @@ def create_level_progress(level, enrollments):
 			level_min_points = setting.completion_min_points
 			next_level = setting.next_level
 			break
-	if not level_min_points:
+	if not level_min_points and level_min_points != 0:
 		frappe.throw("Level not found")
 	failed_students = []
 	for enrollment in level_enrollments:
-		lvl = frappe.db.get_value("Mishkah Level Enrollment", enrollment, ["total_level_points", "program_enrollment"])
+		lvl = frappe.db.get_value("Mishkah Level Enrollment", enrollment, ["total_level_points","basic_total_level_points", "program_enrollment"])
 		if lvl[0] >= level_min_points:
-			handle_level_completion(enrollment, level, lvl[1], next_level)
+			handle_level_completion(enrollment, level, lvl[2], next_level)
 		else:
 			failed_students.append(enrollment)
 			handle_failed_students(enrollment, level)
 		frappe.db.commit()
-	frappe.db.set_single_value("Mishkah Level Complete Tool", "status", "Pending")
-	return {
-		"is_success": True,
-		"failed_students": failed_students
-	}
+	return {"failed_students": failed_students, "next_level": next_level}
 
 def handle_level_completion(enrollment, level,program_enrollment, next_level=None):
 	frappe.db.set_value("Mishkah Level Enrollment", enrollment, "enrollment_status", "Completed")
-	handle_level_completion_certificate(enrollment)
+	#handle_level_completion_certificate(enrollment)
 	if next_level:
+		name =  ''.join(random.choices(string.ascii_letters + string.digits, k=10))
 		new_level_doc = frappe.get_doc({
 			"doctype": "Mishkah Level Enrollment",
+			"name": name,
 			"program_enrollment": program_enrollment,
 			"enrollment_date": frappe.utils.nowdate(),
 			"level": next_level,
@@ -107,8 +145,10 @@ def handle_failed_students(enrollment, level):
 	enrollment_doc = frappe.get_doc("Mishkah Level Enrollment", enrollment)
 	enrollment_doc.enrollment_status =  "Failed"
 	enrollment_doc.save(ignore_permissions=True)
+	name =  ''.join(random.choices(string.ascii_letters + string.digits, k=10))
 	new_level_doc = frappe.get_doc({
 			"doctype": "Mishkah Level Enrollment",
+			"name": name,
 			"program_enrollment": enrollment_doc.program_enrollment,
 			"enrollment_date": frappe.utils.nowdate(),
 			"level": enrollment_doc.level,
@@ -119,6 +159,12 @@ def handle_failed_students(enrollment, level):
 	drop_student_from_groups(enrollment_doc.program_enrollment, level)
 
 def drop_student_from_groups(program_enrollment, level):
+	student = frappe.db.get_value("Mishkah Program Enrollment", program_enrollment, "student")
+	frappe.db.sql("""
+		delete from `tabMishkah Student Group Student`
+			   where student=%(student)s
+""", {"student": student})
+	return
 	groups = frappe.db.sql("""
 			SELECT tbl1.name as group_name
 			FROM `tabMishkah Student Group` tbl1

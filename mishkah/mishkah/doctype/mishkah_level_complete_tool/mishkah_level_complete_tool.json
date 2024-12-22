@@ -8,9 +8,10 @@
  "engine": "InnoDB",
  "field_order": [
   "level",
-  "certificate_date",
+  "group_old_names",
   "status",
   "column_break_ruxd",
+  "group_new_names",
   "get_students",
   "create_level_progress",
   "section_break_q7nl",
@@ -50,22 +51,27 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "certificate_date",
-   "fieldtype": "Date",
-   "label": "Certificate Date"
-  },
-  {
    "fieldname": "status",
    "fieldtype": "Select",
    "label": "Status",
    "options": "Pending\nIn Progress"
+  },
+  {
+   "fieldname": "group_old_names",
+   "fieldtype": "Small Text",
+   "label": "Group Old Names"
+  },
+  {
+   "fieldname": "group_new_names",
+   "fieldtype": "Small Text",
+   "label": "Group New Names"
   }
  ],
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-10-25 10:17:01.088388",
+ "modified": "2024-12-22 10:29:19.493365",
  "modified_by": "Administrator",
  "module": "Mishkah",
  "name": "Mishkah Level Complete Tool",
