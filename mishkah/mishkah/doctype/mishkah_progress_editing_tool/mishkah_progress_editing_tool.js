@@ -19,7 +19,7 @@ frappe.ui.form.on("Mishkah Progress Editing Tool", {
 		for (var input of inputs){
 			if (input.getAttribute("uuid") == save_uuid){
 				results.push({
-					"points": input.value,
+					"points": input.value || 0,
 					"name": input.getAttribute("progress-name"),
 					"course": input.getAttribute("course"),
 					"level_enrollment": input.getAttribute("enrollment-id"),
@@ -244,7 +244,7 @@ frappe.update_enrollment_stage_total = (enrollment) => {
 	var inputs = document.querySelectorAll(`tr[enrollment-id="${enrollment}"] .course-point-input`)
 	var total = 0;
 	for (var input of inputs){
-		total += Number(input.value)
+		total += Number(input.value || 0)
 		frappe.set_input_color(input)
 		
 	}
