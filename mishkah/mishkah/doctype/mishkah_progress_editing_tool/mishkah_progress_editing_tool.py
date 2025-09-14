@@ -160,5 +160,5 @@ def save_progress(results, enrollments):
 			WHERE tbl1.level_enrollment=%(level_enrollment)s and tbl2.basic_course=1
 		""", {"level_enrollment": enrollment}, as_dict=True)
 		total_points = total[0]['total']
-		basic_total_points = basic_total[0]['total']
+		basic_total_points = basic_total[0]['total'] or 0
 		frappe.db.set_value("Mishkah Level Enrollment", enrollment, {"total_level_points": total_points, "basic_total_level_points": basic_total_points})

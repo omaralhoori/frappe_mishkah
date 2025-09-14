@@ -12,7 +12,7 @@ class MishkahStudentGroup(Document):
 				return True
 	@frappe.whitelist()
 	def move_students(self, students, student_group):
-		frappe.only_for("System Manager")
+		frappe.only_for("Mishkah Data Manager")
 		student_group_doc = frappe.get_doc("Mishkah Student Group", student_group)
 		if student_group_doc.group_type != "Student Subgroup":
 			frappe.throw("Please select a student subgroup")
@@ -90,7 +90,22 @@ class MishkahStudentGroup(Document):
 					"for_value": self.name,
 					"apply_to_all_doctypes": 1,
 				}).insert(ignore_permissions=True)
-
+			if self.parent_mishkah_student_group and not frappe.db.exists("User Permission", {"user": user, "allow": "Mishkah Student Group", "for_value": self.parent_mishkah_student_group}):
+				frappe.get_doc({
+					"doctype": "User Permission",
+					"user": user, 
+					"allow": "Mishkah Student Group", 
+					"for_value": self.parent_mishkah_student_group,
+					"apply_to_all_doctypes": 1,
+				}).insert(ignore_permissions=True)
+			if self.parent_mishkah_student_group and not frappe.db.exists("User Permission", {"user": user, "allow": "Mishkah Program Level", "for_value": self.level}):
+				frappe.get_doc({
+					"doctype": "User Permission",
+					"user": user, 
+					"allow": "Mishkah Program Level", 
+					"for_value": self.level,
+					"apply_to_all_doctypes": 1,
+				}).insert(ignore_permissions=True)
 
 def update_student_group_in_student(student_group=None):
 	where_stmt = ""
@@ -102,3 +117,42 @@ def update_student_group_in_student(student_group=None):
 			SET std.student_group=grp.parent
 		{where_stmt}
 """.format(where_stmt=where_stmt))
+
+
+import pandas as pd
+def delete_not_verified_students(file_name):
+	students = pd.read_excel(file_name)
+	for s in students.values:
+		# Student, Student Name, Group ID, Group Name, Group Student, Student Mobile
+		delete_not_verified_student(s)
+
+def delete_not_verified_student(student):
+	print("deleting ", student[1])
+	# check if student exists
+	if not frappe.db.exists("Mishkah Student", student[0]):
+		return
+	# delete From group
+	grp = frappe.get_doc("Mishkah Student Group", student[2])
+	grp.remove_student(student[0])
+	grp.save()
+
+	# delete level Enrollment
+	program = frappe.get_doc("Mishkah Program Enrollment", {"student": student[0]})
+	lvl = frappe.get_doc("Mishkah Level Enrollment", {"program_enrollment": program.name})
+	lvl.delete()
+	# delete program enrollment
+	program.delete()
+
+	# delete student
+	frappe.delete_doc("Mishkah Student", student[0])
+
+	# delete joining form
+	forms = frappe.db.sql("""
+		SELECT name FROM `tabMishkah Student Joining Request`
+		WHERE CONCAT(country_code, mobile_phone) = %(mobile)s
+""", {"mobile": student[5]})
+	if len(forms)> 0:
+		for ff in forms:
+			frappe.delete_doc("Mishkah Student Joining Request", ff[0])
+	# commit
+	frappe.db.commit()

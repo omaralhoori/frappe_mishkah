@@ -303,7 +303,7 @@
    "hidden": 0,
    "is_query_report": 0,
    "label": "Reports",
-   "link_count": 2,
+   "link_count": 4,
    "onboard": 0,
    "type": "Card Break"
   },
@@ -319,16 +319,36 @@
   },
   {
    "hidden": 0,
-   "is_query_report": 0,
+   "is_query_report": 1,
    "label": "Student Out Of Group Report",
    "link_count": 0,
    "link_to": "Student Out Of Group Report",
    "link_type": "Report",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Group Student Progress",
+   "link_count": 0,
+   "link_to": "Group Student Progress",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Student Enrollment Status",
+   "link_count": 0,
+   "link_to": "Mishkah Student Enrollment Status",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2024-12-22 17:13:17.081637",
+ "modified": "2025-07-07 21:46:45.002892",
  "modified_by": "Administrator",
  "module": "Mishkah",
  "name": "Mishkah",

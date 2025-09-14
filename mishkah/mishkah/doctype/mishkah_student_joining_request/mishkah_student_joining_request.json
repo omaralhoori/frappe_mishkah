@@ -88,8 +88,7 @@
    "fieldname": "nationality",
    "fieldtype": "Link",
    "label": "Nationality",
-   "options": "Nationality",
-   "reqd": 1
+   "options": "Nationality"
   },
   {
    "fieldname": "section_break_emyr",
@@ -108,29 +107,25 @@
    "fieldname": "gender",
    "fieldtype": "Select",
    "label": "Gender",
-   "options": "\nFemale\nMale",
-   "reqd": 1
+   "options": "\nFemale\nMale"
   },
   {
    "fieldname": "age_category",
    "fieldtype": "Select",
    "label": "Age Category",
-   "options": "\nUnder 18\n18-30\n31-40\n41-50\n51-60\nAbove 60",
-   "reqd": 1
+   "options": "\nUnder 18\n18-30\n31-40\n41-50\n51-60\nAbove 60"
   },
   {
    "fieldname": "country_of_residence",
    "fieldtype": "Link",
    "label": "Country of Residence",
-   "options": "Country",
-   "reqd": 1
+   "options": "Country"
   },
   {
    "fieldname": "educational_level",
    "fieldtype": "Link",
    "label": "Educational Level",
-   "options": "Mishkah Educational Level",
-   "reqd": 1
+   "options": "Mishkah Educational Level"
   },
   {
    "fieldname": "country_code",
@@ -147,15 +142,13 @@
    "fieldname": "reader_before_mishkah",
    "fieldtype": "Select",
    "label": "Are You Reader Before Mishkah?",
-   "options": "\nYes\nKind of\nNo",
-   "reqd": 1
+   "options": "\nYes\nKind of\nNo"
   },
   {
    "fieldname": "hear_about",
    "fieldtype": "Select",
    "label": "How Did You Hear About Mishkah?",
-   "options": "From Friend\nFrom Social Media\nOther",
-   "reqd": 1
+   "options": "From Friend\nFrom Social Media\nOther"
   },
   {
    "depends_on": "eval:doc.hear_about=='Other'",
@@ -167,28 +160,24 @@
    "fieldname": "have_information_about_mishkah",
    "fieldtype": "Select",
    "label": "Do you have information about Mishkat, and what responsibilities you will have if you join the project?",
-   "options": "\nYes\nKind of\nNo",
-   "reqd": 1
+   "options": "\nYes\nKind of\nNo"
   },
   {
    "fieldname": "give_reading_time",
    "fieldtype": "Select",
    "label": "Are you ready to give reading specific time and make it a priority in your day?",
-   "options": "\nYes\nKind of\nNo",
-   "reqd": 1
+   "options": "\nYes\nKind of\nNo"
   },
   {
    "fieldname": "cooperation_and_commitment",
    "fieldtype": "Select",
    "label": "Do you pledge cooperation, commitment, and good manners?",
-   "options": "\nYes\nKind of\nNo",
-   "reqd": 1
+   "options": "\nYes\nKind of\nNo"
   },
   {
    "fieldname": "reason_for_joining",
    "fieldtype": "Data",
-   "label": "Why do you want to join Mishkat?",
-   "reqd": 1
+   "label": "Why do you want to join Mishkat?"
   },
   {
    "fieldname": "enrollment_info_section",
@@ -229,7 +218,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-08-07 17:18:56.319575",
+ "modified": "2025-07-06 09:32:48.814774",
  "modified_by": "Administrator",
  "module": "Mishkah",
  "name": "Mishkah Student Joining Request",

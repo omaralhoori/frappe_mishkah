@@ -92,3 +92,32 @@ def update_course_studentold():
 """, {"level_enrollment": level_enrollment.name, "student": enrollment.student})
             #frappe.db.set_value("Mishkah Course Progress", {"level_enrollment": level_enrollment.name}, "student", enrollment.student)
             frappe.db.commit()
+
+def delete_students_for_level_enq(level):
+    frappe.enqueue(delete_students_for_level, queue="long", timeout=10000, level=level)
+
+
+def delete_students_for_level(level):
+    groups = frappe.db.get_all("Mishkah Student Group", {"level": level, "group_type": "Student Subgroup"})
+    for group in groups:
+        group_doc = frappe.get_doc("Mishkah Student Group", group.name)
+        for student in group_doc.students:
+            try:
+                program_enrollment = frappe.get_doc("Mishkah Program Enrollment", {"student": student.student})
+                # levels = frappe.db.get_all("Mishkah Level Enrollment", {
+                #     "program_enrollment": program_enrollment.name,
+                #     "level": ["in", "الدفعة الجديدة," + level]
+                # })
+                # for l in levels:
+                #     #level_doc = frappe.get_doc("Mishkah Level Enrollment", {"program_enrollment": program_enrollment.name})
+                #     frappe.delete_doc("Mishkah Level Enrollment", l.name)
+                program_enrollment.delete()
+                group_doc.remove(student)
+                group_doc.save()
+                frappe.delete_doc("Mishkah Student", student.student)
+                
+                frappe.db.commit()
+            except:
+                group_doc.remove(student)
+                group_doc.save()
+                frappe.db.commit()

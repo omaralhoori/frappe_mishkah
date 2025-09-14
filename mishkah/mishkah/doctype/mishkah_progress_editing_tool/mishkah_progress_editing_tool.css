@@ -1,3 +1,7 @@
+ul[role="listbox"]{
+  z-index: 100000;
+}
+
 .view {
     margin: auto;
     width: 600px;

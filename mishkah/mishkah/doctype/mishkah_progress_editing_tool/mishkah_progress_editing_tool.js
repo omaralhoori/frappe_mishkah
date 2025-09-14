@@ -254,14 +254,14 @@ frappe.update_enrollment_stage_total = (enrollment) => {
 
 frappe.set_input_color = (input) =>{
 	if (input.value == 0 ){
-		input.style = "background: red";
+		input.style = "background: #1ed2efd6;";
 	}else{
 		input.style = "background: inherit";
 	}
 }
 frappe.set_total_color = (total, enrollment) =>{
 	if (total == 0 ){
-		document.querySelector(`tr[enrollment-id="${enrollment}"] .first-col`).style = "background-color: red;"
+		document.querySelector(`tr[enrollment-id="${enrollment}"] .first-col`).style = "background-color: #1ed2efd6;"
 	}else{
 		//document.querySelector(`tr[enrollment-id="${enrollment}"] .first-col`).style = "background-color: unset;"
 	}

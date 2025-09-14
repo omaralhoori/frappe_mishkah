@@ -88,8 +88,8 @@ class MishkahStudentJoiningRequest(Document):
 						 AND level=%(level)s 
 						 AND group_type='Student Subgroup'
 						 AND students_count < max_students
-					  ORDER BY students_count desc
-		""", {"program": program, "level": level}, as_dict=True)
+					  ORDER BY cast(student_group_name as unsigned)
+		""", {"program": program, "level": level}, as_dict=True) #students_count desc
 		if len(groups) == 0:
 			frappe.get_doc({
 				"doctype": "Mishkah Errors",

@@ -82,6 +82,7 @@
   {
    "fieldname": "student_mobile",
    "fieldtype": "Data",
+   "in_standard_filter": 1,
    "label": "Student Mobile",
    "reqd": 1,
    "unique": 1
@@ -188,7 +189,7 @@
    "table_fieldname": "students"
   }
  ],
- "modified": "2024-12-15 10:36:47.528486",
+ "modified": "2025-07-17 14:08:44.673323",
  "modified_by": "Administrator",
  "module": "Mishkah",
  "name": "Mishkah Student",
