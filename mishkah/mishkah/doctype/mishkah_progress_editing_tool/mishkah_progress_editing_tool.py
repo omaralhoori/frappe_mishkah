@@ -132,7 +132,7 @@ def save_progress(results, enrollments):
 		results = json.loads(results)
 	for res in results:
 		if not res.get("name") or res.get("name") == "":
-			res['name'] =  ''.join(random.choices(string.ascii_letters + string.digits, k=10))
+			res['name'] =  res.get('level_enrollment') + "-" + res.get("course") #''.join(random.choices(string.ascii_letters + string.digits, k=10))
 		res['creation'] = frappe.utils.now()
 		res['modified'] = frappe.utils.now()
 		res['modified_by'] = frappe.session.user

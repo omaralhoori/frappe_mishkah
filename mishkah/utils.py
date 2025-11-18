@@ -121,3 +121,59 @@ def delete_students_for_level(level):
                 group_doc.remove(student)
                 group_doc.save()
                 frappe.db.commit()
+
+
+
+
+import json
+def delete_duplication_by_json():
+    with open("duplicates.json", "r") as f:
+        data = json.load(f)
+    delete_names = []
+    for record in data:
+        same_points = len(set(record['points'].split(","))) == 1
+        if not same_points: continue
+        names = record['ids'].split(",")
+        i = len(names) - 1
+        while i > 0:
+            delete_names.append(names[i])
+            i -= 1
+    
+    batch_size = 100
+    print(delete_names)
+    for i in range(0, len(delete_names), batch_size):
+        batch = delete_names[i:i+batch_size]
+        print("Deleting ", batch)
+        joined = ",".join(["'%s'" % x for x in batch])
+        frappe.db.sql(f"""
+            DELETE FROM `tabMishkah Course Progress`
+            WHERE name in ({joined})
+    """)
+    frappe.db.commit()
+
+
+def update_progress():
+    with open("duplicates.json", "r") as f:
+        data = json.load(f)
+    enrollments = []
+    for record in data:
+        enrollments.append(record['level_enrollment'])
+    enrollments = set(enrollments)
+
+    for enrollment in enrollments:
+        total = frappe.db.sql("""
+            SELECT SUM(points) as total
+            FROM `tabMishkah Course Progress`
+            WHERE level_enrollment=%(level_enrollment)s
+        """, {"level_enrollment": enrollment}, as_dict=True)
+        basic_total = frappe.db.sql("""
+            SELECT SUM(points) as total
+            FROM `tabMishkah Course Progress` as tbl1
+            INNER JOIN `tabMishkah Course` as tbl2 on tbl1.course=tbl2.name
+            WHERE tbl1.level_enrollment=%(level_enrollment)s and tbl2.basic_course=1
+        """, {"level_enrollment": enrollment}, as_dict=True)
+        total_points = total[0]['total']
+        basic_total_points = basic_total[0]['total'] or 0
+        frappe.db.set_value("Mishkah Level Enrollment", enrollment, {"total_level_points": total_points, "basic_total_level_points": basic_total_points})
+    
+    frappe.db.commit()
