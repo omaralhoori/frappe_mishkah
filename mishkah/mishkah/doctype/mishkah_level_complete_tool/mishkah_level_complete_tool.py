@@ -17,8 +17,8 @@ def get_students(level):
 			SELECT tbl1.name as enrollment, tbl1.total_level_points as points, tbl2.student, tbl1.instructor_name
 			FROM `tabMishkah Level Enrollment` tbl1
 			INNER JOIN `tabMishkah Program Enrollment` tbl2 ON tbl1.program_enrollment = tbl2.name
-			WHERE tbl1.level = %(level)s AND tbl1.enrollment_status='Ongoing' and tbl1.educational_term=%(educational_term)s
-			LIMIT 500
+			WHERE tbl1.level = %(level)s AND tbl1.enrollment_status='Ongoing' and tbl1.educational_term=%(educational_term)s and tbl1.enrollment_date < CURDATE()
+			LIMIT 2000
 						  """, {"level": level, "educational_term": current_term}, as_dict=True)
 	return students
 

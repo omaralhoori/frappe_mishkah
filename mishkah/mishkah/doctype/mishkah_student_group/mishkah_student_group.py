@@ -156,3 +156,24 @@ def delete_not_verified_student(student):
 			frappe.delete_doc("Mishkah Student Joining Request", ff[0])
 	# commit
 	frappe.db.commit()
+
+
+"""
+Update All Instructors Permissions
+1. Get All Instructors Users And Groups
+2. Delete All Permissions For The Instructors
+3. Create New Permissions For The Instructors
+3.1. For Each Group: if group is 
+
+"""
+def update_all_groups_permissions():
+	groups = frappe.db.get_all("Mishkah Student Group")
+	groups_count = 0
+	for group in groups:
+		group_doc = frappe.get_doc("Mishkah Student Group", group.name)
+		group_doc.set_group_permissions()
+		groups_count += 1
+		if groups_count % 10 == 0:
+			frappe.db.commit()
+			print(f"Updated {groups_count} groups")
+	frappe.db.commit()

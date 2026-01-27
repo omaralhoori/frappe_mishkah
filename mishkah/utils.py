@@ -1,5 +1,7 @@
 # import pandas as pd
 import frappe
+import time
+import csv
 def cancel_students():
     sheet = pd.read_excel("cancel_students.xlsx", )
     students = sheet.values[:,0]
@@ -177,3 +179,110 @@ def update_progress():
         frappe.db.set_value("Mishkah Level Enrollment", enrollment, {"total_level_points": total_points, "basic_total_level_points": basic_total_points})
     
     frappe.db.commit()
+"""
+[
+  "first_name",
+  "column_break_yqja",
+  "middle_name",
+  "column_break_3ti7",
+  "last_name",
+  "section_break_jem7",
+  "student_email",
+  "column_break_kmlp",
+  "student_mobile",
+  "section_break_imvp",
+  "nationality",
+  "section_break_4pjq",
+  "country_of_residence",
+  "age_category",
+  "educational_level",
+  "column_break_hc15",
+  "employed",
+  "marital_status",
+  "childrenif_exist",
+  "specialty",
+  "section_break_t4sn",
+  "user",
+  "student_name",
+  "section_break_8xqv",
+  "enrollment_status",
+  "student_group"
+ ],
+"""
+
+# get all students for a level that registered groups
+# for each student, get student data and group name and add to a list
+def get_students_for_level(level, limit=None):
+    students = []
+    groups = frappe.db.get_all("Mishkah Student Group", {"level": level, "group_type": "Student Subgroup"}, ["name", "student_group_name"])
+    print(f"Found {len(groups)} groups for level {level}")
+    count = 0
+    for group in groups[:limit]:
+        group_doc = frappe.get_doc("Mishkah Student Group", group.name)
+        for student in group_doc.students:
+            student_doc = frappe.get_doc("Mishkah Student", student.student)
+            students.append({
+                "student": student_doc.name,
+                "first_name": student_doc.first_name,
+                "middle_name": student_doc.middle_name,
+                "last_name": student_doc.last_name,
+                "student_email": student_doc.student_email,
+                "student_mobile": student_doc.student_mobile,
+                "nationality": student_doc.nationality,
+                "country_of_residence": student_doc.country_of_residence,
+                "age_category": student_doc.age_category,
+                "educational_level": student_doc.educational_level,
+                "employed": student_doc.employed,
+                "marital_status": student_doc.marital_status,
+                "childrenif_exist": student_doc.childrenif_exist,
+                "specialty": student_doc.specialty,
+                "user": student_doc.user,
+                "student_name": student_doc.student_name,
+                "enrollment_status": student_doc.enrollment_status,
+                "student_group": group.name,
+                "group_name": group.student_group_name})
+        #print(f"Added {len(students)} students for level {level}")
+        count += 1
+
+        print(f"Processed {count} / {len(groups)} groups, Found {len(group_doc.students)} students for group {group.name}")
+
+    # write to a csv file use timestamp as part of the filename
+    if len(students) > 0:
+        with open(f"students_{level}_{time.time()}.csv", "w") as f:
+            writer = csv.writer(f)
+            writer.writerow(students[0].keys())
+            for student in students:
+                writer.writerow(student.values())
+    else:
+        print(f"No students found for level {level}")
+    return students
+
+def delete_students_with_related_records(students):
+    count = 0
+    for student in students:
+        # delete from student group students
+        frappe.db.sql("""
+            DELETE FROM `tabMishkah Student Group Student`
+            WHERE student=%(student)s and parent=%(group)s
+        """, {"student": student.get('student'), "group": student.get('student_group')})
+        # get program enrollment
+        program_enrollment = frappe.db.get_value("Mishkah Program Enrollment", {"student": student.get('student')}, "name")
+        # delete from level enrollments
+        frappe.db.sql("""
+            DELETE FROM `tabMishkah Level Enrollment`
+            WHERE program_enrollment=%(program_enrollment)s
+        """, {"program_enrollment": program_enrollment})
+        # delete from program enrollments
+        frappe.db.sql("""
+            DELETE FROM `tabMishkah Program Enrollment`
+            WHERE name=%(program_enrollment)s
+        """, {"program_enrollment": program_enrollment})
+        # delete from students
+        frappe.db.sql("""
+            DELETE FROM `tabMishkah Student`
+            WHERE name=%(student)s
+        """, {"student": student.get('student')})
+        count += 1
+        if count % 100 == 0:
+            print(f"Deleted {count} / {len(students)} students")
+    print(f"Deleted {count} students")
