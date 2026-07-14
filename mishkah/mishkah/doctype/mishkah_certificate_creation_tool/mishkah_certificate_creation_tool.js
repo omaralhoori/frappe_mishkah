@@ -51,8 +51,10 @@ frappe.ui.form.on("Mishkah Certificate Creation Tool", {
             <tr>
 				<th>Student Name</th>
                 <th>Instructor Name</th>
-                <th>Points</th>
+				<th>Points</th>
                 <th>Basic Points</th>
+                <th>Basic Courses</th>
+                <th>All Basic Completed</th>
                 <th>Certificate Type</th>
                 <th>Certificate</th>
                 <th>Action</th>
@@ -69,11 +71,16 @@ frappe.ui.form.on("Mishkah Certificate Creation Tool", {
             if(row.certificate){
                 certificate = `<a href="${row.certificate}" target="_blank">${row.certificate}</a>`
             }
+            var basicCourses = `${row.completed_basic_courses || 0}/${row.total_basic_courses || 0}`
+            var allBasicCompleted = row.all_basic_completed ? "Yes" : "No"
+            var basicCoursesClass = row.all_basic_completed ? "text-success" : ""
             html += ` <tr>
                     <td>${row.student_name}</td>
                     <td>${row.instructor_name}</td>
                     <td>${row.total_level_points}</td>
                     <td>${row.basic_total_level_points}</td>
+                    <td class="${basicCoursesClass}">${basicCourses}</td>
+                    <td class="${basicCoursesClass}">${allBasicCompleted}</td>
                     <td>${row.certificate_name}</td>
                     <td class="certificate">${certificate}</td>
                     <td>
