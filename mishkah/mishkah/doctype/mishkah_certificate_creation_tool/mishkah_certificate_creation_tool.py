@@ -3,27 +3,17 @@
 
 import frappe
 from frappe.model.document import Document
+from mishkah.mishkah.doctype.mishkah_level_enrollment.mishkah_level_enrollment import (
+	get_basic_courses_for_level,
+)
+
 
 class MishkahCertificateCreationTool(Document):
 	pass
 
 
-
 def get_total_basic_courses(level):
-	cache = frappe.cache()
-	cache_key = f"mishkah:total_basic_courses:{level}"
-	total = cache.get_value(cache_key)
-	if total is not None:
-		return int(total)
-
-	total = frappe.db.sql("""
-		SELECT COUNT(DISTINCT lps.course) as total
-		FROM `tabMishkah Learning Path Stage` lps
-		INNER JOIN `tabMishkah Course` c ON c.name = lps.course AND c.basic_course = 1
-		WHERE lps.parent = %(level)s
-	""", {"level": level}, as_dict=True)[0].total or 0
-	cache.set_value(cache_key, total, expires_in_sec=3600)
-	return total
+	return len(get_basic_courses_for_level(level))
 
 
 @frappe.whitelist()
@@ -34,19 +24,13 @@ def get_students(student_group):
 		         total_basic_courses, all_basic_completed}
 	"""
 	level = frappe.db.get_value("Mishkah Student Group", student_group, "level")
-	total_basic_courses = get_total_basic_courses(level)
+	basic_courses = get_basic_courses_for_level(level)
+	total_basic_courses = len(basic_courses)
 
 	students = frappe.db.sql("""
 		SELECT tbl2.student_name, tbl4.total_level_points, tbl4.basic_total_level_points,
 			   tbl4.certificate_name, tbl4.certificate,
-			   tbl6.instructor_name, tbl4.name as level_enrollment, tbl2.name as student,
-			   COALESCE(basic_progress.completed_basic_courses, 0) as completed_basic_courses,
-			   %(total_basic_courses)s as total_basic_courses,
-			   CASE
-				   WHEN %(total_basic_courses)s = 0 THEN 0
-				   WHEN COALESCE(basic_progress.completed_basic_courses, 0) >= %(total_basic_courses)s THEN 1
-				   ELSE 0
-			   END as all_basic_completed
+			   tbl6.instructor_name, tbl4.name as level_enrollment, tbl2.name as student
 		FROM
 			`tabMishkah Student Group Student` as tbl1
 			INNER JOIN `tabMishkah Student` as tbl2 ON tbl1.student=tbl2.name
@@ -55,26 +39,38 @@ def get_students(student_group):
 			INNER JOIN `tabMishkah Level Enrollment` as tbl4 ON tbl4.program_enrollment=prog.name and tbl4.level=tbl3.level and tbl4.enrollment_status="Ongoing"
 			INNER JOIN `tabMishkah Student Group Instructor` as tbl5 ON tbl5.parent=tbl1.parent
 			INNER JOIN `tabMishkah Instructor` as tbl6 ON tbl6.name=tbl5.instructor
-			LEFT JOIN (
-				SELECT cp.level_enrollment, COUNT(DISTINCT cp.course) as completed_basic_courses
-				FROM `tabMishkah Course Progress` cp
-				INNER JOIN `tabMishkah Course` c ON c.name = cp.course AND c.basic_course = 1
-				INNER JOIN `tabMishkah Learning Path Stage` lps ON lps.course = c.name AND lps.parent = %(level)s
-				INNER JOIN `tabMishkah Level Enrollment` le ON le.name = cp.level_enrollment
-					AND le.level = %(level)s AND le.enrollment_status = "Ongoing"
-				INNER JOIN `tabMishkah Program Enrollment` pe ON pe.name = le.program_enrollment
-				INNER JOIN `tabMishkah Student Group Student` sgs ON sgs.student = pe.student
-					AND sgs.parent = %(student_group)s AND sgs.is_active = 1
-				WHERE cp.points >= c.course_points
-				GROUP BY cp.level_enrollment
-			) as basic_progress ON basic_progress.level_enrollment = tbl4.name
 		WHERE
 			tbl1.parent=%(student_group)s and tbl1.is_active=1 and tbl2.enrollment_status="عضوية فعالة"
-	""", {
-		"student_group": student_group,
-		"level": level,
-		"total_basic_courses": total_basic_courses,
-	}, as_dict=True)
+	""", {"student_group": student_group}, as_dict=True)
+
+	completed_by_enrollment = {}
+	if students and basic_courses:
+		enrollment_names = tuple({row.level_enrollment for row in students})
+		# Indexed by level_enrollment — only scans rows for this group's enrollments
+		progress_rows = frappe.db.sql("""
+			SELECT level_enrollment, COUNT(*) as completed_basic_courses
+			FROM `tabMishkah Course Progress`
+			WHERE level_enrollment IN %(enrollments)s
+				AND points > 0
+				AND course IN %(courses)s
+			GROUP BY level_enrollment
+		""", {
+			"enrollments": enrollment_names,
+			"courses": tuple(basic_courses),
+		}, as_dict=True)
+		completed_by_enrollment = {
+			row.level_enrollment: row.completed_basic_courses
+			for row in progress_rows
+		}
+
+	for row in students:
+		completed = completed_by_enrollment.get(row.level_enrollment, 0)
+		row.completed_basic_courses = completed
+		row.total_basic_courses = total_basic_courses
+		row.all_basic_completed = (
+			1 if total_basic_courses > 0 and completed >= total_basic_courses else 0
+		)
+
 	return students
 
 @frappe.whitelist()
@@ -83,4 +79,3 @@ def create_certificate(level_enrollment, instructor_name):
 	enrollment_doc.instructor_name = instructor_name
 	enrollment_doc.save(ignore_permissions=True)
 	return enrollment_doc.generate_certificate()
-	
