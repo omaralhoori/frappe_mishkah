@@ -162,3 +162,128 @@ def save_progress(results, enrollments):
 		total_points = total[0]['total']
 		basic_total_points = basic_total[0]['total'] or 0
 		frappe.db.set_value("Mishkah Level Enrollment", enrollment, {"total_level_points": total_points, "basic_total_level_points": basic_total_points})
+
+
+MISMATCH_WHERE = """
+	SUBSTRING_INDEX(name, '-', -1) != course
+	AND name LIKE CONCAT(level_enrollment, '-%')
+"""
+
+
+def _get_course_progress_name_mismatches():
+	return frappe.db.sql(f"""
+		SELECT
+			name,
+			level_enrollment,
+			course,
+			SUBSTRING_INDEX(name, '-', -1) AS name_course_id,
+			CONCAT(level_enrollment, '-', course) AS expected_name,
+			points,
+			student
+		FROM `tabMishkah Course Progress`
+		WHERE {MISMATCH_WHERE}
+		ORDER BY level_enrollment, course
+	""", as_dict=True)
+
+
+@frappe.whitelist()
+def get_course_progress_name_mismatch_report(sample_limit=50):
+	"""تقرير عن سجلات Course Progress التي لا يطابق فيها الجزء بعد '-' حقل course."""
+	mismatches = _get_course_progress_name_mismatches()
+	breakdown = frappe.db.sql(f"""
+		SELECT
+			SUBSTRING_INDEX(name, '-', -1) AS old_course_id_in_name,
+			course AS actual_course_id,
+			COUNT(*) AS count
+		FROM `tabMishkah Course Progress`
+		WHERE {MISMATCH_WHERE}
+		GROUP BY old_course_id_in_name, actual_course_id
+		ORDER BY count DESC, old_course_id_in_name, actual_course_id
+	""", as_dict=True)
+
+	target_names = {}
+	conflicts = []
+	for row in mismatches:
+		target = row["expected_name"]
+		if target in target_names and target_names[target] != row["name"]:
+			conflicts.append({
+				"target_name": target,
+				"records": [target_names[target], row["name"]],
+			})
+		target_names[target] = row["name"]
+
+	return {
+		"total_mismatches": len(mismatches),
+		"breakdown": breakdown,
+		"rename_conflicts": conflicts,
+		"sample_records": mismatches[:int(sample_limit or 50)],
+	}
+
+
+@frappe.whitelist()
+def fix_course_progress_names(dry_run=True):
+	"""
+	إعادة تسمية سجلات Course Progress لتصبح: level_enrollment-course
+	عندما يكون الجزء الأخير من الاسم (بعد '-') لا يساوي course.
+
+	التشغيل:
+		# عرض التقرير فقط
+		bench --site SITE execute mishkah.mishkah.doctype.mishkah_progress_editing_tool.mishkah_progress_editing_tool.get_course_progress_name_mismatch_report
+
+		# معاينة الإصلاح بدون تنفيذ
+		bench --site SITE execute mishkah.mishkah.doctype.mishkah_progress_editing_tool.mishkah_progress_editing_tool.fix_course_progress_names
+
+		# تنفيذ الإصلاح
+		bench --site SITE execute mishkah.mishkah.doctype.mishkah_progress_editing_tool.mishkah_progress_editing_tool.fix_course_progress_names --kwargs "{'dry_run': False}"
+	"""
+	report = get_course_progress_name_mismatch_report()
+	mismatches = _get_course_progress_name_mismatches()
+
+	if report["rename_conflicts"]:
+		frappe.throw(
+			"يوجد تعارض في الأسماء المستهدفة. راجع rename_conflicts في التقرير قبل التنفيذ.",
+			title="تعارض في إعادة التسمية",
+		)
+
+	renames = [
+		{
+			"old_name": row["name"],
+			"new_name": row["expected_name"],
+			"old_course_id_in_name": row["name_course_id"],
+			"actual_course_id": row["course"],
+			"level_enrollment": row["level_enrollment"],
+			"student": row["student"],
+			"points": row["points"],
+		}
+		for row in mismatches
+		if row["name"] != row["expected_name"]
+	]
+
+	result = {
+		"dry_run": bool(int(dry_run) if isinstance(dry_run, str) else dry_run),
+		"total_mismatches": report["total_mismatches"],
+		"breakdown": report["breakdown"],
+		"renames_planned": len(renames),
+		"renamed": 0,
+		"rename_details": renames,
+	}
+
+	if result["dry_run"]:
+		return result
+
+	temp_prefix = "__fix_name__"
+	for row in renames:
+		frappe.db.sql(
+			"UPDATE `tabMishkah Course Progress` SET name=%s WHERE name=%s",
+			(temp_prefix + row["old_name"], row["old_name"]),
+		)
+
+	for row in renames:
+		frappe.db.sql(
+			"UPDATE `tabMishkah Course Progress` SET name=%s WHERE name=%s",
+			(row["new_name"], temp_prefix + row["old_name"]),
+		)
+		result["renamed"] += 1
+
+	frappe.db.commit()
+	return result
