@@ -60,15 +60,19 @@ class MishkahLevelEnrollment(Document):
 		if not certificates:
 			frappe.throw("Cannot find certificate")
 
-		all_basic_completed = self.has_completed_all_basic_courses()
+		all_basic_completed = True#self.has_completed_all_basic_courses()
 		certificate_template = None
 
 		if all_basic_completed:
 			# All certificates available; use total_level_points
 			for certificate in reversed(certificates):
-				if self.total_level_points >= certificate["min_points"]:
+				if self.total_level_points >= certificate["min_points"] and self.basic_total_level_points >= certificate["min_basic_points"]:
 					certificate_template = certificate
 					break
+			if not certificate_template:
+				silver_certificate = certificates[0]
+				if self.basic_total_level_points >= silver_certificate["min_basic_points"]:
+					certificate_template = silver_certificate
 		else:
 			# Only silver (lowest min_points); use basic_total_level_points
 			silver_certificate = certificates[0]
@@ -84,6 +88,7 @@ class MishkahLevelEnrollment(Document):
 			INNER JOIN `tabMishkah Student` as tbl2 ON tbl1.student=tbl2.name
 			WHERE tbl1.name=%(enrollment)s
 			""", {"enrollment": self.program_enrollment},as_dict=True)[0]["student_name"]
+		student_name = student_name.replace('\u200f', '')
 		file = create_mishkah_certificate(certificate_template.certificate, student_name, self.instructor_name or "", frappe.utils.nowdate(), self.level)
 		self.certificate = file
 		self.certificate_name = certificate_template.certificate

@@ -1,6 +1,5 @@
 {
  "actions": [],
- "allow_rename": 1,
  "autoname": "field:course_code",
  "creation": "2023-12-10 02:32:42.329202",
  "default_view": "List",
@@ -60,7 +59,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-19 10:13:35.840852",
+ "modified": "2026-09-02 08:30:08.657865",
  "modified_by": "Administrator",
  "module": "Mishkah",
  "name": "Mishkah Course",
