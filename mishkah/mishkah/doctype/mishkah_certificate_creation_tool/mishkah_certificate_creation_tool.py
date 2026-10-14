@@ -6,6 +6,9 @@ from frappe.model.document import Document
 from mishkah.mishkah.doctype.mishkah_level_enrollment.mishkah_level_enrollment import (
 	get_basic_courses_for_level,
 )
+from mishkah.mishkah.doctype.mishkah_certificate.graduation_certificate import (
+	get_graduation_config,
+)
 
 
 class MishkahCertificateCreationTool(Document):
@@ -21,16 +24,22 @@ def get_students(student_group):
 	"""
 		return: {student, student_name, level-enrollment, instructor-name, total-points,
 		         certificate_type, certificate(if-exists), completed_basic_courses,
-		         total_basic_courses, all_basic_completed}
+		         total_basic_courses, all_basic_completed, graduation fields}
 	"""
 	level = frappe.db.get_value("Mishkah Student Group", student_group, "level")
 	basic_courses = get_basic_courses_for_level(level)
 	total_basic_courses = len(basic_courses)
+	graduation_config = get_graduation_config()
+	is_graduation_level = 1 if (
+		graduation_config.get("level") and graduation_config.get("level") == level
+	) else 0
 
 	students = frappe.db.sql("""
 		SELECT tbl2.student_name, tbl4.total_level_points, tbl4.basic_total_level_points,
 			   tbl4.certificate_name, tbl4.certificate,
-			   tbl6.instructor_name, tbl4.name as level_enrollment, tbl2.name as student
+			   tbl6.instructor_name, tbl4.name as level_enrollment, tbl2.name as student,
+			   prog.name as program_enrollment, prog.program,
+			   prog.graduation_certificate, prog.graduated, prog.graduation_date
 		FROM
 			`tabMishkah Student Group Student` as tbl1
 			INNER JOIN `tabMishkah Student` as tbl2 ON tbl1.student=tbl2.name
@@ -46,7 +55,6 @@ def get_students(student_group):
 	completed_by_enrollment = {}
 	if students and basic_courses:
 		enrollment_names = tuple({row.level_enrollment for row in students})
-		# Indexed by level_enrollment — only scans rows for this group's enrollments
 		progress_rows = frappe.db.sql("""
 			SELECT level_enrollment, COUNT(*) as completed_basic_courses
 			FROM `tabMishkah Course Progress`
@@ -70,12 +78,31 @@ def get_students(student_group):
 		row.all_basic_completed = (
 			1 if total_basic_courses > 0 and completed >= total_basic_courses else 0
 		)
+		row.is_graduation_level = is_graduation_level
 
-	return students
+	return {
+		"students": students,
+		"is_graduation_level": is_graduation_level,
+		"graduation_level": graduation_config.get("level"),
+	}
+
 
 @frappe.whitelist()
 def create_certificate(level_enrollment, instructor_name):
 	enrollment_doc = frappe.get_doc("Mishkah Level Enrollment", level_enrollment)
 	enrollment_doc.instructor_name = instructor_name
 	enrollment_doc.save(ignore_permissions=True)
-	return enrollment_doc.generate_certificate()
+	level_cert = enrollment_doc.generate_certificate()
+	pe = frappe.db.get_value(
+		"Mishkah Level Enrollment",
+		level_enrollment,
+		"program_enrollment",
+	)
+	graduation_cert = frappe.db.get_value(
+		"Mishkah Program Enrollment", pe, "graduation_certificate"
+	) if pe else None
+	return {
+		"certificate": level_cert,
+		"graduation_certificate": graduation_cert,
+		"program_enrollment": pe,
+	}

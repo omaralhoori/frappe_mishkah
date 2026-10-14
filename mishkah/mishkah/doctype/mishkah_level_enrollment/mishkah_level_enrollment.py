@@ -96,4 +96,11 @@ class MishkahLevelEnrollment(Document):
 		self.db_set("certificate", file)
 		self.db_set("certificate_name", certificate_template.certificate)
 		self.db_set("certificate_type", certificate_template.certificate)
+
+		# Also issue graduation certificate when this is the graduation level
+		from mishkah.mishkah.doctype.mishkah_certificate.graduation_certificate import (
+			maybe_issue_graduation_certificate,
+		)
+		maybe_issue_graduation_certificate(self)
+
 		return self.certificate

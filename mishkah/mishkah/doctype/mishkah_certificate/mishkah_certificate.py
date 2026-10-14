@@ -13,6 +13,27 @@ class MishkahCertificate(Document):
 
 
 @frappe.whitelist()
+def generate_test_certificate(certificate, student_name, reason_for_certificate, certificate_date):
+	"""Generate a preview certificate using the same PDF engine as live certificates."""
+	from mishkah.mishkah.doctype.mishkah_certificate.graduation_certificate import (
+		create_mishkah_certificate,
+	)
+
+	if not frappe.db.get_value("Mishkah Certificate", certificate, "certificate_pdf"):
+		frappe.throw(frappe._("Certificate PDF template is required"))
+
+	file_path = create_mishkah_certificate(
+		certificate,
+		student_name,
+		reason_for_certificate or "",
+		certificate_date,
+		"test",
+	)
+	frappe.db.set_value("Mishkah Certificate", certificate, "test_certificate", file_path)
+	return file_path
+
+
+@frappe.whitelist()
 def generate_certificate(certificate,student_name, reason_for_certificate,certificate_date, save_as_file=False):
 	certificate_doc = frappe.get_doc("Mishkah Certificate", certificate)
 	template = Image.open(get_file_path(certificate_doc.certificate_image))

@@ -36,7 +36,7 @@
   },
   {
    "fieldname": "points",
-   "fieldtype": "Float",
+   "fieldtype": "Int",
    "in_list_view": 1,
    "label": "Points",
    "reqd": 1
@@ -59,7 +59,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-10-04 13:38:48.366198",
+ "modified": "2026-09-18 06:22:10.429968",
  "modified_by": "Administrator",
  "module": "Mishkah",
  "name": "Mishkah Course Progress",

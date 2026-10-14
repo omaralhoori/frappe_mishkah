@@ -94,7 +94,14 @@ def create_pdf_certificate(template_path, output_path, configs, data):
     # c.drawString(configs.get("name_position")[0], configs.get("name_position")[1], f"{data.student_name}")
     # c.drawString(configs.date_position[0], configs.date_position[1], f"Date: {data.date}")
     # c.drawString(configs.grade_position[0], configs.grade_position[1], f"Grade: {data.grade}")
-    reshaped_text = arabic_reshaper.reshape(data.name)
+    configuration = {
+	'delete_harakat': False,
+	'support_ligatures': True,
+	'RIAL SIGN': True,  # Replace ر ي ا ل with ﷼
+	}
+    reshaper = arabic_reshaper.ArabicReshaper(configuration=configuration)
+	
+    reshaped_text = reshaper.reshape(data.name)#arabic_reshaper.reshape(data.name)
     bidi_text = get_display(reshaped_text)
     text_width = pdfmetrics.stringWidth(bidi_text, configs['font']['name'], configs['size']['name'])
 
@@ -142,10 +149,268 @@ def get_file_path(file_path):
     return file_path
 
 def draw_arabic_text(canvas, text, position, color):
-    reshaped_text = arabic_reshaper.reshape(text)
+    configuration = {
+    'delete_harakat': False,
+    'support_ligatures': True,
+    'RIAL SIGN': True,  # Replace ر ي ا ل with ﷼
+    }
+    reshaper = arabic_reshaper.ArabicReshaper(configuration=configuration)
+    reshaped_text = reshaper.reshape(text)#arabic_reshaper.reshape(text)
     bidi_text = get_display(reshaped_text)
     canvas.setFillColor(color)
     canvas.drawString(position[0], position[1], bidi_text)
+
+
+def get_graduation_config(program=None):
+	"""Return graduation level and template (program override, else Settings)."""
+	graduation_level = frappe.db.get_single_value("Mishkah Settings", "graduation_level")
+	template = None
+	if program:
+		template = frappe.db.get_value("Mishkah Program", program, "graduation_certificate")
+	if not template:
+		template = frappe.db.get_single_value("Mishkah Settings", "graduation_certificate")
+	return {
+		"level": graduation_level,
+		"template": template,
+	}
+
+
+def get_student_full_name(student):
+	row = frappe.db.get_value(
+		"Mishkah Student",
+		student,
+		["first_name", "middle_name", "last_name", "student_name"],
+		as_dict=True,
+	)
+	if not row:
+		return ""
+	parts = [
+		" ".join(str(row.first_name or "").split()),
+		" ".join(str(row.middle_name or "").split()),
+		" ".join(str(row.last_name or "").split()),
+	]
+	name = " ".join(p for p in parts if p) or (row.student_name or "")
+	return name.replace("\u200f", "")
+
+
+def get_graduation_level_certificate_enrollment(program_enrollment):
+	"""Return graduation-level enrollment that already has a level certificate, if any."""
+	config = get_graduation_config()
+	graduation_level = config.get("level")
+	if not graduation_level:
+		return None
+
+	rows = frappe.db.sql(
+		"""
+		SELECT name, certificate, instructor_name
+		FROM `tabMishkah Level Enrollment`
+		WHERE program_enrollment = %(program_enrollment)s
+			AND level = %(graduation_level)s
+			AND IFNULL(certificate, '') != ''
+		ORDER BY modified DESC
+		LIMIT 1
+		""",
+		{
+			"program_enrollment": program_enrollment,
+			"graduation_level": graduation_level,
+		},
+		as_dict=True,
+	)
+	return rows[0] if rows else None
+
+
+@frappe.whitelist()
+def can_regenerate_graduation_certificate(program_enrollment):
+	"""Whether PE may regenerate graduation cert (has graduation-level cert already)."""
+	level_enrollment = get_graduation_level_certificate_enrollment(program_enrollment)
+	config = get_graduation_config(
+		frappe.db.get_value("Mishkah Program Enrollment", program_enrollment, "program")
+	)
+	eligible = bool(level_enrollment and config.get("template"))
+	return {
+		"eligible": eligible,
+		"instructor_name": (level_enrollment.instructor_name if level_enrollment else "") or "",
+		"has_level_certificate": bool(level_enrollment),
+		"has_template": bool(config.get("template")),
+	}
+
+
+@frappe.whitelist()
+def regenerate_graduation_certificate(program_enrollment):
+	"""Force-regenerate graduation certificate if graduation-level cert already exists."""
+	level_enrollment = get_graduation_level_certificate_enrollment(program_enrollment)
+	if not level_enrollment:
+		frappe.throw(
+			frappe._(
+				"Cannot regenerate graduation certificate: student has no certificate "
+				"for the configured graduation level"
+			)
+		)
+
+	return create_student_graduation_certificate(
+		program_enrollment,
+		instructor_name=level_enrollment.instructor_name or "",
+		force=True,
+	)
+
+
+def create_student_graduation_certificate(program_enrollment, instructor_name=None, force=False):
+	"""Generate graduation PDF and store it on Program Enrollment."""
+	pe = frappe.db.get_value(
+		"Mishkah Program Enrollment",
+		program_enrollment,
+		["name", "program", "student", "graduation_certificate"],
+		as_dict=True,
+	)
+	if not pe:
+		frappe.throw(frappe._("Program Enrollment not found"))
+
+	if pe.graduation_certificate and not force:
+		return pe.graduation_certificate
+
+	config = get_graduation_config(pe.program)
+	if not config.get("template"):
+		frappe.throw(frappe._("Graduation certificate template is not configured"))
+
+	student_name = get_student_full_name(pe.student)
+	if not student_name:
+		frappe.throw(frappe._("Student name is missing"))
+
+	instructor = instructor_name or ""
+	certificate_date = frappe.utils.nowdate()
+	file_path = create_mishkah_certificate(
+		config["template"],
+		student_name,
+		instructor,
+		certificate_date,
+		"graduation/" + (pe.program or "program"),
+	)
+
+	frappe.db.set_value(
+		"Mishkah Program Enrollment",
+		pe.name,
+		{
+			"graduation_certificate": file_path,
+			"graduation_date": certificate_date,
+			"graduated": 1,
+		},
+		update_modified=True,
+	)
+	return file_path
+
+
+@frappe.whitelist()
+def create_graduation_certificate(program_enrollment, instructor_name=None, force=0):
+	"""Whitelist wrapper for Certificate Creation Tool / API."""
+	force = frappe.utils.cint(force)
+	level_enrollment = get_graduation_level_certificate_enrollment(program_enrollment)
+	if not level_enrollment:
+		frappe.throw(
+			frappe._(
+				"Cannot create graduation certificate: student must have a certificate "
+				"for the configured graduation level first"
+			)
+		)
+	if not instructor_name:
+		instructor_name = level_enrollment.instructor_name or ""
+	return create_student_graduation_certificate(
+		program_enrollment, instructor_name=instructor_name, force=force
+	)
+
+
+def maybe_issue_graduation_certificate(level_enrollment_doc):
+	"""If this level is the graduation level, also issue graduation certificate on PE."""
+	config = get_graduation_config()
+	graduation_level = config.get("level")
+	if not graduation_level or level_enrollment_doc.level != graduation_level:
+		return None
+
+	program = frappe.db.get_value(
+		"Mishkah Program Enrollment",
+		level_enrollment_doc.program_enrollment,
+		"program",
+	)
+	config = get_graduation_config(program)
+	if not config.get("template"):
+		return None
+
+	existing = frappe.db.get_value(
+		"Mishkah Program Enrollment",
+		level_enrollment_doc.program_enrollment,
+		"graduation_certificate",
+	)
+	if existing:
+		return existing
+
+	return create_student_graduation_certificate(
+		level_enrollment_doc.program_enrollment,
+		instructor_name=level_enrollment_doc.instructor_name or "",
+	)
+
+
+@frappe.whitelist()
+def generate_all_graduation_certificates(program=None):
+	"""Issue graduation cert for students who already have a level certificate
+	at Settings.graduation_level and no graduation_certificate yet.
+
+	bench --site <site> execute mishkah.mishkah.doctype.mishkah_certificate.graduation_certificate.generate_all_graduation_certificates
+	"""
+	config = get_graduation_config()
+	graduation_level = config.get("level")
+	if not graduation_level:
+		frappe.throw(frappe._("Graduation Level is not set in Mishkah Settings"))
+
+	filters = {
+		"graduation_level": graduation_level,
+	}
+	program_filter = ""
+	if program:
+		program_filter = "AND pe.program = %(program)s"
+		filters["program"] = program
+
+	rows = frappe.db.sql(
+		f"""
+		SELECT DISTINCT
+			pe.name as program_enrollment,
+			pe.program,
+			lvl.instructor_name
+		FROM `tabMishkah Level Enrollment` lvl
+		INNER JOIN `tabMishkah Program Enrollment` pe
+			ON pe.name = lvl.program_enrollment
+		WHERE lvl.level = %(graduation_level)s
+			AND IFNULL(lvl.certificate, '') != ''
+			AND IFNULL(pe.graduation_certificate, '') = ''
+			{program_filter}
+		""",
+		filters,
+		as_dict=True,
+	)
+
+	created = 0
+	skipped = 0
+	errors = []
+	for row in rows:
+		try:
+			prog_config = get_graduation_config(row.program)
+			if not prog_config.get("template"):
+				skipped += 1
+				continue
+			create_student_graduation_certificate(
+				row.program_enrollment,
+				instructor_name=row.instructor_name or "",
+			)
+			created += 1
+			frappe.db.commit()
+		except Exception as e:
+			frappe.db.rollback()
+			errors.append({"program_enrollment": row.program_enrollment, "error": str(e)})
+
+	return {
+		"created": created,
+		"skipped": skipped,
+		"errors": errors,
+		"total_candidates": len(rows),
+	}
 
 
 def generate_all_enrollments_certificates(length=100, one_batch=False):

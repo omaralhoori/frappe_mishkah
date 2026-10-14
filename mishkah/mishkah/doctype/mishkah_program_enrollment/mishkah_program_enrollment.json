@@ -11,7 +11,12 @@
   "program",
   "student",
   "student_name",
-  "enrollment_date"
+  "enrollment_date",
+  "graduation_section",
+  "graduated",
+  "graduation_date",
+  "column_break_grad",
+  "graduation_certificate"
  ],
  "fields": [
   {
@@ -44,6 +49,34 @@
    "fieldname": "student_name",
    "fieldtype": "Data",
    "label": "Student Name"
+  },
+  {
+   "fieldname": "graduation_section",
+   "fieldtype": "Section Break",
+   "label": "Graduation"
+  },
+  {
+   "default": "0",
+   "fieldname": "graduated",
+   "fieldtype": "Check",
+   "label": "Graduated",
+   "read_only": 1
+  },
+  {
+   "fieldname": "graduation_date",
+   "fieldtype": "Date",
+   "label": "Graduation Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_grad",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "graduation_certificate",
+   "fieldtype": "Attach",
+   "label": "Graduation Certificate",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,

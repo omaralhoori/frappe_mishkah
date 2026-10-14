@@ -15,7 +15,11 @@
   "validate_student_group_change",
   "section_break_zg6c",
   "current_educational_term",
-  "current_level_completion_educational_term"
+  "current_level_completion_educational_term",
+  "graduation_certificate_section",
+  "graduation_level",
+  "column_break_grad",
+  "graduation_certificate"
  ],
  "fields": [
   {
@@ -72,6 +76,29 @@
    "fieldname": "validate_student_group_change",
    "fieldtype": "Check",
    "label": "Validate Student Group Change"
+  },
+  {
+   "fieldname": "graduation_certificate_section",
+   "fieldtype": "Section Break",
+   "label": "Graduation Certificate"
+  },
+  {
+   "description": "Level at which graduation certificate is issued along with the level certificate",
+   "fieldname": "graduation_level",
+   "fieldtype": "Link",
+   "label": "Graduation Level",
+   "options": "Mishkah Program Level"
+  },
+  {
+   "fieldname": "column_break_grad",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Default graduation certificate template (can be overridden per program)",
+   "fieldname": "graduation_certificate",
+   "fieldtype": "Link",
+   "label": "Graduation Certificate Template",
+   "options": "Mishkah Certificate"
   }
  ],
  "hide_toolbar": 1,
